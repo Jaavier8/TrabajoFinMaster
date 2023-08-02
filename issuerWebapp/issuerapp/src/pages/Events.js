@@ -15,7 +15,7 @@ import AddIcon from '@mui/icons-material/Add';
 import NewEventModal from 'components/NewEventModal';
 
 // constants
-import { PYBACK } from 'constants/constants';
+import { ISSUER } from 'constants/constants';
 
 const StyledImage = styled('img')(({ theme }) => ({
     "&:hover": {
@@ -43,7 +43,7 @@ export default function Events(props) {
     useEffect(() => {
         async function getEvents() {
             setLoadingEvents(true);
-            const resEvents = await fetch(`${PYBACK}/events`);
+            const resEvents = await fetch(`${ISSUER}/events`);
             if (resEvents.status === 200) {
                 const events = await resEvents.json();
 
@@ -54,7 +54,7 @@ export default function Events(props) {
                         posters[event._id] = undefined;
                         continue;
                     }
-                    const imageRes = await fetch(`${PYBACK}/images/${event._id}/${event.posterPath}`);
+                    const imageRes = await fetch(`${ISSUER}/images/${event._id}/${event.posterPath}`);
                     if (imageRes.status === 200) {
                         const imageBlob = await imageRes.blob();
                         let urlCreator = window.URL || window.webkitURL;

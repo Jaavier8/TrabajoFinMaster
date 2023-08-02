@@ -1,5 +1,1 @@
-// Deployment
-//export const PYBACK = "https://architect.morfeotech.com";
-
-// Development
-export const PYBACK = "";
+export const ISSUER = "http://localhost:5000";

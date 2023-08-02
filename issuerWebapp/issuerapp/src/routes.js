@@ -2,6 +2,7 @@ import { useRoutes } from "react-router-dom";
 
 import MainLayout from "pages/MainLayout";
 import Events from "pages/Events";
+import Connections from "pages/Connections";
 
 export default function ThemeRoutes() {
   return useRoutes([
@@ -11,7 +12,7 @@ export default function ThemeRoutes() {
       children: [
         {
           path: "connections",
-          element: <Events />,
+          element: <Connections />,
         },
         {
           path: "definitions",
