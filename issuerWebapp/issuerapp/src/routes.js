@@ -1,21 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useRoutes } from "react-router-dom";
 
-import { Navigate, useRoutes } from "react-router-dom";
+import MainLayout from "pages/MainLayout";
+import Events from "pages/Events";
 
-import HomeScreen from "./pages/HomeScreen"
-
-export default function Router(props) {
-    
-    const routes = useRoutes([
-        { path: "/", element: <Navigate to="/home" replace /> },
+export default function ThemeRoutes() {
+  return useRoutes([
+    {
+      path: "/",
+      element: <MainLayout />,
+      children: [
         {
-            path: "home",
-            element: (
-                <HomeScreen />
-                )
-            }
-        ]);
-        
-        return routes;
-    }
-    
+          path: "connections",
+          element: <Events />,
+        },
+        {
+          path: "definitions",
+          element: <Events />,
+        },
+        {
+          path: "credentialsreq",
+          element: <Events />,
+        }
+      ],
+    },
+  ]);
+}

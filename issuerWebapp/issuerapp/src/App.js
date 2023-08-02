@@ -1,17 +1,29 @@
-// React
-import React from "react";
-// routes
-import Router from './routes';
-// theme
-import ThemeConfig from './theme';
-import GlobalStyles from './theme/globalStyles';
+import { ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, StyledEngineProvider } from '@mui/material';
 
-export default function App(props) {
+// routing
+import Routes from 'routes';
 
-  return (
-    <ThemeConfig>
-      <GlobalStyles />
-        <Router />
-    </ThemeConfig>
-  );
-}
+// defaultTheme
+import themes from 'themes';
+
+// project imports
+import NavigationScroll from 'components/NavigationScroll';
+
+// ==============================|| APP ||============================== //
+
+const App = () => {
+
+    return (
+        <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={themes()}>
+                <CssBaseline />
+                <NavigationScroll>
+                    <Routes />
+                </NavigationScroll>
+            </ThemeProvider>
+        </StyledEngineProvider>
+    );
+};
+
+export default App;
