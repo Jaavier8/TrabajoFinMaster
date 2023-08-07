@@ -21,7 +21,7 @@ import AddIcon from "@mui/icons-material/Add";
 import NewEventModal from "components/NewEventModal";
 
 // constants
-import { ISSUER } from "constants/constants";
+import { POLICE_ISSUER } from "constants/constants";
 
 const StyledImage = styled("img")(({ theme }) => ({
   "&:hover": {
@@ -49,7 +49,7 @@ export default function Connections(props) {
   useEffect(() => {
     async function getConnections() {
       setLoadingConnections(true);
-      const resConn = await fetch(`${ISSUER}/connections`);
+      const resConn = await fetch(`${POLICE_ISSUER}/connections`);
       if (resConn.status === 200) {
         const conn = await resConn.json();
 
