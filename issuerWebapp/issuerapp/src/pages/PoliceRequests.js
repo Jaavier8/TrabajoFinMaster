@@ -15,12 +15,6 @@ import { styled } from "@mui/material/styles";
 import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
 
-// icons
-import AddIcon from "@mui/icons-material/Add";
-
-// modals
-import NewEventModal from "components/NewEventModal";
-
 // constants
 import { POLICE_ISSUER } from "constants/constants";
 import { SEND_OFFER_POLICE } from "constants/jsonBodys";
@@ -34,11 +28,6 @@ const gridSpacing = 3;
 
 export default function PoliceRequests(props) {
   const [credReq, setCredReq] = useState([]);
-  const [connPosters, setConnPosters] = useState({});
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-
-  const [showImageViewerModal, setShowImageViewerModal] = useState(false);
-  const [imageSelected, setImageSelected] = useState([]);
 
   const [loadingRequests, setLoadingRequests] = useState(false);
 

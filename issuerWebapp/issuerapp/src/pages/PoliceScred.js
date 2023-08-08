@@ -5,7 +5,6 @@ import {
   Grid,
   Typography,
   Stack,
-  Button,
   CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
@@ -14,20 +13,8 @@ import { styled } from "@mui/material/styles";
 import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
 
-// icons
-import AddIcon from "@mui/icons-material/Add";
-
-// modals
-import NewEventModal from "components/NewEventModal";
-
 // constants
 import { POLICE_ISSUER } from "constants/constants";
-
-const StyledImage = styled("img")(({ theme }) => ({
-  "&:hover": {
-    transform: "scale(1.1)",
-  },
-}));
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -39,11 +26,6 @@ const gridSpacing = 3;
 export default function PoliceScred(props) {
   const [schemas, setSchemas] = useState([]);
   const [credentialsDef, setCredentialsDef] = useState([]);
-  const [connPosters, setConnPosters] = useState({});
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-
-  const [showImageViewerModal, setShowImageViewerModal] = useState(false);
-  const [imageSelected, setImageSelected] = useState([]);
 
   const [loadingData, setLoadingData] = useState(false);
 
@@ -100,7 +82,7 @@ export default function PoliceScred(props) {
 
   const schemaFromSeqNo = (seqNo) => {
     for(const schema of schemas){
-      if(schema.seqNo == seqNo){
+      if(schema.seqNo === seqNo){
         return schema.name
       }
     }

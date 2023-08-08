@@ -11,30 +11,14 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
-import { useNavigate } from "react-router-dom";
-
 // project imports
 import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
-
-// icons
-import AddIcon from "@mui/icons-material/Add";
-import identification from "../assets/images/identification.png";
-import school from "../assets/images/school.png";
-import language from "../assets/images/language.png";
-
-// modals
-import NewEventModal from "components/NewEventModal";
 
 // constants
 import { POLICE_ISSUER, HOLDER } from "constants/constants";
 import { SEND_PROPOSAL_POLICE } from "constants/jsonBodys";
 
-const StyledImage = styled("img")(({ theme }) => ({
-  "&:hover": {
-    transform: "scale(1.1)",
-  },
-}));
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -43,26 +27,7 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 
 const gridSpacing = 3;
 
-const CREDENTIALS = [
-  {
-    name: "Identificación personal",
-    img: identification,
-    path: "/requestcredential/police",
-  },
-  {
-    name: "Finalización de estudios",
-    img: school,
-    path: "/requestcredential/university",
-  },
-  {
-    name: "Certificado idiomas",
-    img: language,
-    path: "/requestcredential/academy",
-  },
-];
-
 export default function RequestCredentialPolice(props) {
-  const navigate = useNavigate();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -71,7 +36,6 @@ export default function RequestCredentialPolice(props) {
   const [activeStep, setActiveStep] = useState(0);
 
   const [credExId, setCredExId] = useState("");
-  const [offerReceived, setOfferReceived] = useState([]);
 
   const [loadingConnections, setLoadingConnections] = useState(false);
   const [stablishingConnection, setStablishingConnection] = useState(false);
@@ -89,7 +53,7 @@ export default function RequestCredentialPolice(props) {
 
         console.log(conn["results"]);
         for (const connection of conn["results"]) {
-          if (connection["their_label"] == "police") {
+          if (connection["their_label"] === "police") {
             setPoliceConnectionId(connection["connection_id"]);
 
             let newActiveStep = activeStep + 1;
@@ -105,7 +69,7 @@ export default function RequestCredentialPolice(props) {
       }
     }
     getConnections();
-  }, []);
+  }, [activeStep]);
 
   const stablishConnection = async () => {
     setStablishingConnection(true);
@@ -161,8 +125,8 @@ export default function RequestCredentialPolice(props) {
         for (const record of credRecordsJson["results"]) {
           console.log("1: " + credExId);
           if (
-            record["cred_ex_record"]["cred_ex_id"] == credExId &&
-            record["cred_ex_record"]["state"] == "offer-received"
+            record["cred_ex_record"]["cred_ex_id"] === credExId &&
+            record["cred_ex_record"]["state"] === "offer-received"
           ) {
             console.log("2");
             const offerReceived =
@@ -250,8 +214,8 @@ export default function RequestCredentialPolice(props) {
         const credRecordsJson = await credRecords.json();
         for (const record of credRecordsJson["results"]) {
           if (
-            record["cred_ex_record"]["cred_ex_id"] == credExId &&
-            record["cred_ex_record"]["state"] == "credential-received"
+            record["cred_ex_record"]["cred_ex_id"] === credExId &&
+            record["cred_ex_record"]["state"] === "credential-received"
           ) {
             clearInterval(interval);
             resolve();

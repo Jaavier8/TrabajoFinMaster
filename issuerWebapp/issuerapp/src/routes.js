@@ -1,7 +1,7 @@
 import { Outlet, useRoutes } from "react-router-dom";
 
 import MainLayout from "pages/MainLayout";
-import Events from "pages/Events";
+//import Events from "pages/Events";
 import Connections from "pages/Connections";
 import RequestCredential from "pages/RequestCredential";
 import RequestCredentialPolice from "pages/RequestCredentialPolice";
