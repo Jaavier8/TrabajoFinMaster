@@ -196,6 +196,22 @@ export default function RequestCredentialPolice(props) {
 
   const requestCertificate = async () => {
     setRequestingCertificate(true);
+
+    //Get credId
+    const credIdRes = await fetch(
+      `${POLICE_ISSUER}/credential-definitions/created`
+    );
+    const credIdResJson = await credIdRes.json();
+    const credId = credIdResJson['credential_definition_ids'][0];
+
+    //Get schemaId and version
+    const schemaIdRes = await fetch(
+      `${POLICE_ISSUER}/schemas/created`
+    );
+    const schemaIdResJson = await schemaIdRes.json();
+    const schemaId = schemaIdResJson['schema_ids'][0];
+
+    //Issue credential
     const reqCert = await fetch(
       `${HOLDER}/issue-credential-2.0/send-proposal`,
       {
@@ -204,7 +220,7 @@ export default function RequestCredentialPolice(props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(
-          SEND_PROPOSAL_POLICE(policeConnectionId, firstName, lastName, age)
+          SEND_PROPOSAL_POLICE(policeConnectionId, firstName, lastName, age, credId, schemaId, schemaId.slice(-3))
         ),
       }
     );

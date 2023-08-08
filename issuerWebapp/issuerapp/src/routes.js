@@ -5,6 +5,9 @@ import Events from "pages/Events";
 import Connections from "pages/Connections";
 import RequestCredential from "pages/RequestCredential";
 import RequestCredentialPolice from "pages/RequestCredentialPolice";
+import Police from "pages/Police";
+import PoliceScred from "pages/PoliceScred";
+import PoliceRequests from "pages/PoliceRequests"
 
 export default function ThemeRoutes() {
   return useRoutes([
@@ -27,16 +30,74 @@ export default function ThemeRoutes() {
           ]
         },
         {
+          path: "police",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Police />
+            },
+            {
+              path: "scred",
+              element: <PoliceScred />
+            },
+            {
+              path: "requests",
+              element: <PoliceRequests />
+            },
+            {
+              path: "issued",
+              element: <PoliceRequests />
+            }
+          ]
+        },
+        {
+          path: "university",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Police />
+            },
+            {
+              path: "scred",
+              element: <PoliceScred />
+            },
+            {
+              path: "requests",
+              element: <PoliceRequests />
+            },
+            {
+              path: "issued",
+              element: <PoliceRequests />
+            }
+          ]
+        },
+        {
+          path: "academy",
+          element: <Outlet />,
+          children: [
+            {
+              index: true,
+              element: <Police />
+            },
+            {
+              path: "scred",
+              element: <PoliceScred />
+            },
+            {
+              path: "requests",
+              element: <PoliceRequests />
+            },
+            {
+              path: "issued",
+              element: <PoliceRequests />
+            }
+          ]
+        },
+        {
           path: "connections",
           element: <Connections />
-        },
-        {
-          path: "definitions",
-          element: <Events />
-        },
-        {
-          path: "credentialsreq",
-          element: <Events />
         }
       ],
     },
