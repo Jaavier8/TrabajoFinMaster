@@ -5,9 +5,13 @@ import MainLayout from "pages/MainLayout";
 import Connections from "pages/Connections";
 import RequestCredential from "pages/RequestCredential";
 import RequestCredentialPolice from "pages/RequestCredentialPolice";
+import RequestCredentialAcademy from "pages/RequestCredentialAcademy";
 import Police from "pages/Police";
 import PoliceScred from "pages/PoliceScred";
 import PoliceRequests from "pages/PoliceRequests"
+import Academy from "pages/Academy";
+import AcademyScred from "pages/AcademyScred";
+import AcademyRequests from "pages/AcademyRequests";
 
 export default function ThemeRoutes() {
   return useRoutes([
@@ -25,6 +29,14 @@ export default function ThemeRoutes() {
             },
             {
               path: "police",
+              element: <RequestCredentialPolice />
+            },
+            {
+              path: "academy",
+              element: <RequestCredentialAcademy />
+            },
+            {
+              path: "university",
               element: <RequestCredentialPolice />
             }
           ]
@@ -79,15 +91,15 @@ export default function ThemeRoutes() {
           children: [
             {
               index: true,
-              element: <Police />
+              element: <Academy />
             },
             {
               path: "scred",
-              element: <PoliceScred />
+              element: <AcademyScred />
             },
             {
               path: "requests",
-              element: <PoliceRequests />
+              element: <AcademyRequests />
             },
             {
               path: "issued",

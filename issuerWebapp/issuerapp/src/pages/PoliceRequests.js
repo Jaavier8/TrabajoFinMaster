@@ -19,6 +19,9 @@ import MainCard from "components/MainCard";
 import { POLICE_ISSUER } from "constants/constants";
 import { SEND_OFFER_POLICE } from "constants/jsonBodys";
 
+// icon
+import RefreshIcon from "@mui/icons-material/Refresh";
+
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
   justifyContent: "center",
@@ -27,9 +30,26 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 const gridSpacing = 3;
 
 export default function PoliceRequests(props) {
-  const [credReq, setCredReq] = useState([]);
+  const [attributes, setAttributes] = useState({});
 
+  const [credReq, setCredReq] = useState([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
+
+  const addAttributes = (credReq) => {
+    let result = {};
+    for (const req of credReq) {
+      const attrs =
+        req.cred_ex_record.cred_proposal.credential_preview.attributes;
+      if (!result[req["cred_ex_record"]["cred_ex_id"]]) {
+        result[req["cred_ex_record"]["cred_ex_id"]] = {};
+      }
+      for (const attr of attrs) {
+        result[req["cred_ex_record"]["cred_ex_id"]][attr["name"]] =
+          attr["value"];
+      }
+    }
+    setAttributes(result);
+  };
 
   useEffect(() => {
     async function getCredentialRequests() {
@@ -39,8 +59,10 @@ export default function PoliceRequests(props) {
       );
       if (credReqRes.status === 200) {
         const credReqResJson = await credReqRes.json();
+        const credReq = credReqResJson["results"];
 
-        setCredReq(credReqResJson["results"]);
+        setCredReq(credReq);
+        addAttributes(credReq);
 
         await new Promise((r) => setTimeout(r, 2000));
 
@@ -59,8 +81,10 @@ export default function PoliceRequests(props) {
     );
     if (credReqRes.status === 200) {
       const credReqResJson = await credReqRes.json();
+      const credReq = credReqResJson["results"];
 
-      setCredReq(credReqResJson["results"]);
+      setCredReq(credReq);
+      addAttributes(credReq);
 
       await new Promise((r) => setTimeout(r, 2000));
 
@@ -127,60 +151,99 @@ export default function PoliceRequests(props) {
     }
   };
 
-  const formatAttributes = (attrs) => {
-    let result = {};
-    for (const attr of attrs) {
-      result[attr["name"]] = attr["value"];
+  const deleteReq = async (credExId) => {
+    const deleteReq = await fetch(
+      `${POLICE_ISSUER}/issue-credential-2.0/records/${credExId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (deleteReq.status === 200) {
+      reloadCredentialRequests();
+    } else {
+      console.log("Error eliminando");
     }
-    return result;
   };
 
-  const renderStep = (state, attributes, credExId) => {
+  const renderStep = (state, credExId) => {
     switch (state) {
       case "proposal-received":
         return (
           <>
             <TextField
               fullWidth
-              disabled
-              value={attributes["firstname"]}
+              value={attributes[credExId].firstname}
               label="Nombre"
               onChange={(event) => {
-                return;
+                setAttributes((prevState) => ({
+                  ...prevState,
+                  [credExId]: {
+                    ...prevState[credExId],
+                    firstname: event.target.value,
+                  },
+                }));
               }}
             />
             <TextField
               fullWidth
-              disabled
-              value={attributes["lastname"]}
+              value={attributes[credExId].lastname}
               label="Apellido"
               onChange={(event) => {
-                return;
+                setAttributes((prevState) => ({
+                  ...prevState,
+                  [credExId]: {
+                    ...prevState[credExId],
+                    lastname: event.target.value,
+                  },
+                }));
               }}
             />
             <TextField
               fullWidth
-              disabled
-              value={attributes["age"]}
+              value={attributes[credExId].age}
               label="Edad"
               onChange={(event) => {
-                return;
+                setAttributes((prevState) => ({
+                  ...prevState,
+                  [credExId]: {
+                    ...prevState[credExId],
+                    age: event.target.value,
+                  },
+                }));
               }}
             />
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() =>
-                sendOffer(
-                  credExId,
-                  attributes.firstname,
-                  attributes.lastname,
-                  attributes.age
-                )
-              }
+            <Stack
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              spacing={2}
+              sx={{ width: "100%" }}
             >
-              Enviar Oferta
-            </Button>
+              <Button
+                fullWidth
+                variant="outlined"
+                onClick={() => deleteReq(credExId)}
+              >
+                Eliminar
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                onClick={() =>
+                  sendOffer(
+                    credExId,
+                    attributes[credExId].firstname,
+                    attributes[credExId].lastname,
+                    attributes[credExId].age
+                  )
+                }
+              >
+                Enviar Oferta
+              </Button>
+            </Stack>
           </>
         );
       case "offer-sent":
@@ -213,7 +276,18 @@ export default function PoliceRequests(props) {
 
   return (
     <>
-      <MainCard title="Solicitudes de credenciales" secondary={<></>}>
+      <MainCard
+        title="Solicitudes de credenciales"
+        secondary={
+          <Button
+            variant="contained"
+            startIcon={<RefreshIcon />}
+            onClick={() => reloadCredentialRequests()}
+          >
+            Recargar
+          </Button>
+        }
+      >
         {credReq.length === 0 ? (
           <Stack>
             <Typography align="center">
@@ -237,7 +311,16 @@ export default function PoliceRequests(props) {
             {credReq.map((req, index) => {
               return (
                 <Grid item xs={6} key={index}>
-                  <SubCard title={"Estado: " + req.cred_ex_record.state}>
+                  <SubCard
+                    title={
+                      <>
+                        {"Estado: " + req.cred_ex_record.state}
+                        <br />
+                        {"ID de la conexión: " +
+                          req.cred_ex_record.connection_id}
+                      </>
+                    }
+                  >
                     <Stack
                       direction="column"
                       justifyContent="center"
@@ -246,10 +329,6 @@ export default function PoliceRequests(props) {
                     >
                       {renderStep(
                         req.cred_ex_record.state,
-                        formatAttributes(
-                          req.cred_ex_record.cred_proposal.credential_preview
-                            .attributes
-                        ),
                         req.cred_ex_record.cred_ex_id
                       )}
                     </Stack>

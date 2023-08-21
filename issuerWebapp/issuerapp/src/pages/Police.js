@@ -54,10 +54,6 @@ const PAGES = [
 export default function Police(props) {
   const navigate = useNavigate();
 
-  const [events, setEvents] = useState([]);
-  const [eventsPosters, setEventsPosters] = useState({});
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-
   return (
     <>
       <MainCard title="Menú de navegación" secondary={<></>}>
@@ -101,18 +97,6 @@ export default function Police(props) {
           })}
         </MyGrid>
       </MainCard>
-
-      <NewEventModal
-        show={showNewEventModal}
-        onClose={() => setShowNewEventModal(false)}
-        onAddEvent={(event, eventPoster) => {
-          setEvents([...events, event]);
-          setEventsPosters({
-            ...eventsPosters,
-            [event._id]: eventPoster,
-          });
-        }}
-      />
     </>
   );
 }

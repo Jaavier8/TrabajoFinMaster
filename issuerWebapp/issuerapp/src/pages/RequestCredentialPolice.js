@@ -51,7 +51,6 @@ export default function RequestCredentialPolice(props) {
       if (resConn.status === 200) {
         const conn = await resConn.json();
 
-        console.log(conn["results"]);
         for (const connection of conn["results"]) {
           if (connection["their_label"] === "police") {
             setPoliceConnectionId(connection["connection_id"]);
@@ -69,7 +68,7 @@ export default function RequestCredentialPolice(props) {
       }
     }
     getConnections();
-  }, [activeStep]);
+  }, []);
 
   const stablishConnection = async () => {
     setStablishingConnection(true);
@@ -341,6 +340,7 @@ export default function RequestCredentialPolice(props) {
 
                   <TextField
                     fullWidth
+                    value={firstName}
                     label="Nombre"
                     onChange={(event) => {
                       setFirstName(event.target.value);
@@ -348,6 +348,7 @@ export default function RequestCredentialPolice(props) {
                   />
                   <TextField
                     fullWidth
+                    value={lastName}
                     label="Apellido"
                     onChange={(event) => {
                       setLastName(event.target.value);
@@ -355,6 +356,7 @@ export default function RequestCredentialPolice(props) {
                   />
                   <TextField
                     fullWidth
+                    value={age}
                     label="Edad"
                     onChange={(event) => {
                       setAge(event.target.value);

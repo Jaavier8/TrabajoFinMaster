@@ -10,26 +10,19 @@ const NavbarNavigation = () => {
       alignItems="center"
       spacing={2}
     >
-      <Stack
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
+      <Button component={Link} to="/requestcredential/police" variant="text">
+        Policía
+      </Button>
+      <Button
+        component={Link}
+        to="/requestcredential/university"
+        variant="text"
       >
-        <Button component={Link} to="/requestcredential/police" variant="text">
-          Policía
-        </Button>
-        <Button
-          component={Link}
-          to="/requestcredential/university"
-          variant="text"
-        >
-          Universidad
-        </Button>
-        <Button component={Link} to="/requestcredential/academy" variant="text">
-          Academia
-        </Button>
-      </Stack>
+        Universidad
+      </Button>
+      <Button component={Link} to="/requestcredential/academy" variant="text">
+        Academia
+      </Button>
     </Stack>
   ) : (
     <Stack
