@@ -22,8 +22,10 @@ sleep 30
 
 tmux new-session -d -s createpoliceschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"firstname\",\"lastname\",\"age\"],\"schema_name\":\"passport\",\"schema_version\":\"0.1\"}" "http://localhost:5000/schemas"'
 tmux new-session -d -s createacademyschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"language\",\"score\"],\"schema_name\":\"certificate\",\"schema_version\":\"0.1\"}" "http://localhost:5001/schemas"'
+tmux new-session -d -s createuniversityschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"degree\",\"school\",\"finalgrade\"],\"schema_name\":\"degree\",\"schema_version\":\"0.1\"}" "http://localhost:5002/schemas"'
 
 sleep 10
 
 tmux new-session -d -s createpolicecredential 'curl -X POST -H "Content-Type: application/json" -d "{\"revocation_registry_size\":1000,\"schema_id\":\"PxvKxvhH1ypT5fjnstLwPH:2:passport:0.1\",\"support_revocation\":true,\"tag\":\"passport\"}" "http://localhost:5000/credential-definitions"'
 tmux new-session -d -s createacademycredential 'curl -X POST -H "Content-Type: application/json" -d "{\"revocation_registry_size\":1000,\"schema_id\":\"DA5Tgk2xpQbZG1D6uuVYsb:2:certificate:0.1\",\"support_revocation\":true,\"tag\":\"certificate\"}" "http://localhost:5001/credential-definitions"'
+tmux new-session -d -s createuniversitycredential 'curl -X POST -H "Content-Type: application/json" -d "{\"revocation_registry_size\":1000,\"schema_id\":\"71Fsr9SzB1pawqUJnVjmMz:2:degree:0.1\",\"support_revocation\":true,\"tag\":\"degree\"}" "http://localhost:5002/credential-definitions"'

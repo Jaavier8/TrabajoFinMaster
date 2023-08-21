@@ -75,6 +75,47 @@ export const SEND_PROPOSAL_ACADEMY = (
   };
 };
 
+export const SEND_PROPOSAL_UNIVERSITY = (
+  universityConnection,
+  degree,
+  school,
+  finalGrade,
+  credId,
+  schemaId,
+  schemaVersion
+) => {
+  return {
+    connection_id: universityConnection,
+    credential_preview: {
+      "@type": "issue-credential/2.0/credential-preview",
+      attributes: [
+        {
+          name: "degree",
+          value: degree,
+        },
+        {
+          name: "school",
+          value: school,
+        },
+        {
+          name: "finalgrade",
+          value: finalGrade,
+        }
+      ],
+    },
+    filter: {
+      indy: {
+        cred_def_id: credId,
+        issuer_did: "71Fsr9SzB1pawqUJnVjmMz",
+        schema_id: schemaId,
+        schema_issuer_did: "71Fsr9SzB1pawqUJnVjmMz",
+        schema_name: "degree",
+        schema_version: schemaVersion,
+      },
+    },
+  };
+};
+
 export const SEND_OFFER_POLICE = (
   firstName,
   lastName,
@@ -142,6 +183,45 @@ export const SEND_OFFER_ACADEMY = (
         schema_id: schemaId,
         schema_issuer_did: "DA5Tgk2xpQbZG1D6uuVYsb",
         schema_name: "certificate",
+        schema_version: schemaVersion,
+      },
+    },
+  };
+};
+
+export const SEND_OFFER_UNIVERSITY = (
+  degree,
+  school,
+  finalGrade,
+  credId,
+  schemaId,
+  schemaVersion
+) => {
+  return {
+    counter_preview: {
+      "@type": "issue-credential/2.0/credential-preview",
+      attributes: [
+        {
+          name: "degree",
+          value: degree,
+        },
+        {
+          name: "school",
+          value: school,
+        },
+        {
+          name: "finalgrade",
+          value: finalGrade,
+        }
+      ],
+    },
+    filter: {
+      indy: {
+        cred_def_id: credId,
+        issuer_did: "71Fsr9SzB1pawqUJnVjmMz",
+        schema_id: schemaId,
+        schema_issuer_did: "71Fsr9SzB1pawqUJnVjmMz",
+        schema_name: "degree",
         schema_version: schemaVersion,
       },
     },

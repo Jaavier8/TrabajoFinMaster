@@ -48,9 +48,12 @@ const Header = () => {
         component="span"
         sx={{ display: { xs: "none", md: "block" }, width: "15%" }}
       >
-        <Typography variant="h1" align="right" style={{ color: "red" }}>
-          {location.pathname.split("/")[1].charAt(0).toUpperCase() + location.pathname.split("/")[1].slice(1)}
-        </Typography>
+        {!location.pathname.includes("requestcredential") ? (
+          <Typography variant="h1" align="right" style={{ color: "red" }}>
+            {location.pathname.split("/")[1].charAt(0).toUpperCase() +
+              location.pathname.split("/")[1].slice(1)}
+          </Typography>
+        ) : null}
       </Box>
     </Stack>
   );

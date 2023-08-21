@@ -16,8 +16,8 @@ import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
 
 // constants
-import { ACADEMY_ISSUER } from "constants/constants";
-import { SEND_OFFER_ACADEMY } from "constants/jsonBodys";
+import { UNIVERSITY_ISSUER } from "constants/constants";
+import { SEND_OFFER_UNIVERSITY } from "constants/jsonBodys";
 
 // icon
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -29,7 +29,7 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 
 const gridSpacing = 3;
 
-export default function AcademyRequests(props) {
+export default function UniversityRequests(props) {
   const [attributes, setAttributes] = useState({});
 
   const [credReq, setCredReq] = useState([]);
@@ -55,7 +55,7 @@ export default function AcademyRequests(props) {
     async function getCredentialRequests() {
       setLoadingRequests(true);
       const credReqRes = await fetch(
-        `${ACADEMY_ISSUER}/issue-credential-2.0/records`
+        `${UNIVERSITY_ISSUER}/issue-credential-2.0/records`
       );
       if (credReqRes.status === 200) {
         const credReqResJson = await credReqRes.json();
@@ -77,7 +77,7 @@ export default function AcademyRequests(props) {
   const reloadCredentialRequests = async () => {
     setLoadingRequests(true);
     const credReqRes = await fetch(
-      `${ACADEMY_ISSUER}/issue-credential-2.0/records`
+      `${UNIVERSITY_ISSUER}/issue-credential-2.0/records`
     );
     if (credReqRes.status === 200) {
       const credReqResJson = await credReqRes.json();
@@ -94,30 +94,31 @@ export default function AcademyRequests(props) {
     }
   };
 
-  const sendOffer = async (credExId, language, score) => {
+  const sendOffer = async (credExId, degree, school, finalGrade) => {
     //Get credId
     const credIdRes = await fetch(
-      `${ACADEMY_ISSUER}/credential-definitions/created`
+      `${UNIVERSITY_ISSUER}/credential-definitions/created`
     );
     const credIdResJson = await credIdRes.json();
     const credId = credIdResJson["credential_definition_ids"][0];
 
     //Get schemaId and version
-    const schemaIdRes = await fetch(`${ACADEMY_ISSUER}/schemas/created`);
+    const schemaIdRes = await fetch(`${UNIVERSITY_ISSUER}/schemas/created`);
     const schemaIdResJson = await schemaIdRes.json();
     const schemaId = schemaIdResJson["schema_ids"][0];
 
     const sendOffer = await fetch(
-      `${ACADEMY_ISSUER}/issue-credential-2.0/records/${credExId}/send-offer`,
+      `${UNIVERSITY_ISSUER}/issue-credential-2.0/records/${credExId}/send-offer`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(
-          SEND_OFFER_ACADEMY(
-            language,
-            score,
+          SEND_OFFER_UNIVERSITY(
+            degree,
+            school,
+            finalGrade,
             credId,
             schemaId,
             schemaId.slice(-3)
@@ -134,7 +135,7 @@ export default function AcademyRequests(props) {
 
   const issueCredential = async (credExId) => {
     const issueCred = await fetch(
-      `${ACADEMY_ISSUER}/issue-credential-2.0/records/${credExId}/issue`,
+      `${UNIVERSITY_ISSUER}/issue-credential-2.0/records/${credExId}/issue`,
       {
         method: "POST",
         headers: {
@@ -152,7 +153,7 @@ export default function AcademyRequests(props) {
 
   const deleteReq = async (credExId) => {
     const deleteReq = await fetch(
-      `${ACADEMY_ISSUER}/issue-credential-2.0/records/${credExId}`,
+      `${UNIVERSITY_ISSUER}/issue-credential-2.0/records/${credExId}`,
       {
         method: "DELETE",
         headers: {
@@ -174,28 +175,42 @@ export default function AcademyRequests(props) {
           <>
             <TextField
               fullWidth
-              value={attributes[credExId].language}
-              label="Idioma"
+              value={attributes[credExId].degree}
+              label="Grado"
               onChange={(event) => {
                 setAttributes((prevState) => ({
                   ...prevState,
                   [credExId]: {
                     ...prevState[credExId],
-                    language: event.target.value,
+                    degree: event.target.value,
                   },
                 }));
               }}
             />
             <TextField
               fullWidth
-              value={attributes[credExId].score}
-              label="Nota"
+              value={attributes[credExId].school}
+              label="Escuela"
               onChange={(event) => {
                 setAttributes((prevState) => ({
                   ...prevState,
                   [credExId]: {
                     ...prevState[credExId],
-                    score: event.target.value,
+                    school: event.target.value,
+                  },
+                }));
+              }}
+            />
+            <TextField
+              fullWidth
+              value={attributes[credExId].finalgrade}
+              label="Nota final"
+              onChange={(event) => {
+                setAttributes((prevState) => ({
+                  ...prevState,
+                  [credExId]: {
+                    ...prevState[credExId],
+                    finalgrade: event.target.value,
                   },
                 }));
               }}
@@ -220,8 +235,9 @@ export default function AcademyRequests(props) {
                 onClick={() =>
                   sendOffer(
                     credExId,
-                    attributes[credExId].language,
-                    attributes[credExId].score
+                    attributes[credExId].degree,
+                    attributes[credExId].school,
+                    attributes[credExId].finalgrade
                   )
                 }
               >
@@ -295,7 +311,16 @@ export default function AcademyRequests(props) {
             {credReq.map((req, index) => {
               return (
                 <Grid item xs={6} key={index}>
-                  <SubCard title={"Estado: " + req.cred_ex_record.state}>
+                  <SubCard
+                    title={
+                      <>
+                        {"Estado: " + req.cred_ex_record.state}
+                        <br />
+                        {"ID de la conexión: " +
+                          req.cred_ex_record.connection_id}
+                      </>
+                    }
+                  >
                     <Stack
                       direction="column"
                       justifyContent="center"
