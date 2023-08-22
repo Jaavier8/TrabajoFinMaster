@@ -20,7 +20,7 @@ tmux new-session -d -s verifier 'PORTS="7070:7070 11010:11010" ~/OneDrive/Escrit
 
 sleep 30
 
-tmux new-session -d -s createpoliceschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"firstname\",\"lastname\",\"age\"],\"schema_name\":\"passport\",\"schema_version\":\"0.1\"}" "http://localhost:5000/schemas"'
+tmux new-session -d -s createpoliceschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"firstname\",\"lastname\",\"dateofbirth\",\"idnumber\"],\"schema_name\":\"passport\",\"schema_version\":\"0.1\"}" "http://localhost:5000/schemas"'
 tmux new-session -d -s createacademyschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"language\",\"score\"],\"schema_name\":\"certificate\",\"schema_version\":\"0.1\"}" "http://localhost:5001/schemas"'
 tmux new-session -d -s createuniversityschema 'curl -X POST -H "Content-Type: application/json" -d "{\"attributes\":[\"degree\",\"school\",\"finalgrade\"],\"schema_name\":\"degree\",\"schema_version\":\"0.1\"}" "http://localhost:5002/schemas"'
 

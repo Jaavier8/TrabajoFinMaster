@@ -8,6 +8,8 @@
         "@mui/lab": "^5.0.0-alpha.88",
         "@mui/material": "^5.8.6",
         "@mui/system": "^5.8.6",
+        "@mui/x-date-pickers": "^6.11.2",
+        "dayjs": "^1.11.9",
         "formik": "^2.2.9",
         "prop-types": "^15.8.1",
         "react": "^18.2.0",

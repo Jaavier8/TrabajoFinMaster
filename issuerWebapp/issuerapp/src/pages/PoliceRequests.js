@@ -94,7 +94,13 @@ export default function PoliceRequests(props) {
     }
   };
 
-  const sendOffer = async (credExId, firstName, lastName, age) => {
+  const sendOffer = async (
+    credExId,
+    firstName,
+    lastName,
+    dateOfBirth,
+    idNumber
+  ) => {
     //Get credId
     const credIdRes = await fetch(
       `${POLICE_ISSUER}/credential-definitions/created`
@@ -107,6 +113,17 @@ export default function PoliceRequests(props) {
     const schemaIdResJson = await schemaIdRes.json();
     const schemaId = schemaIdResJson["schema_ids"][0];
 
+    console.log(
+      SEND_OFFER_POLICE(
+        firstName,
+        lastName,
+        dateOfBirth,
+        idNumber,
+        credId,
+        schemaId,
+        schemaId.slice(-3)
+      )
+    );
     const sendOffer = await fetch(
       `${POLICE_ISSUER}/issue-credential-2.0/records/${credExId}/send-offer`,
       {
@@ -118,7 +135,8 @@ export default function PoliceRequests(props) {
           SEND_OFFER_POLICE(
             firstName,
             lastName,
-            age,
+            dateOfBirth,
+            idNumber,
             credId,
             schemaId,
             schemaId.slice(-3)
@@ -133,7 +151,7 @@ export default function PoliceRequests(props) {
     }
   };
 
-  const issueCredential = async (credExId) => {
+  const issueCredential = async (credExId, connId) => {
     const issueCred = await fetch(
       `${POLICE_ISSUER}/issue-credential-2.0/records/${credExId}/issue`,
       {
@@ -145,6 +163,13 @@ export default function PoliceRequests(props) {
       }
     );
     if (issueCred.status === 200) {
+      let policeCredentials =
+        JSON.parse(localStorage.getItem("policeCredentials")) || [];
+      policeCredentials.push({ connId, credExId, attrs: attributes[credExId] });
+      localStorage.setItem(
+        "policeCredentials",
+        JSON.stringify(policeCredentials)
+      );
       reloadCredentialRequests();
     } else {
       console.log("Error expediendo credencial");
@@ -168,7 +193,7 @@ export default function PoliceRequests(props) {
     }
   };
 
-  const renderStep = (state, credExId) => {
+  const renderStep = (state, credExId, connId) => {
     switch (state) {
       case "proposal-received":
         return (
@@ -203,14 +228,28 @@ export default function PoliceRequests(props) {
             />
             <TextField
               fullWidth
-              value={attributes[credExId].age}
-              label="Edad"
+              value={attributes[credExId].dateofbirth}
+              label="Fecha de Nacimiento (En segundos desde 1970)"
               onChange={(event) => {
                 setAttributes((prevState) => ({
                   ...prevState,
                   [credExId]: {
                     ...prevState[credExId],
-                    age: event.target.value,
+                    dateofbirth: event.target.value,
+                  },
+                }));
+              }}
+            />
+            <TextField
+              fullWidth
+              value={attributes[credExId].idnumber}
+              label="Nº de identificación"
+              onChange={(event) => {
+                setAttributes((prevState) => ({
+                  ...prevState,
+                  [credExId]: {
+                    ...prevState[credExId],
+                    idnumber: event.target.value,
                   },
                 }));
               }}
@@ -237,7 +276,8 @@ export default function PoliceRequests(props) {
                     credExId,
                     attributes[credExId].firstname,
                     attributes[credExId].lastname,
-                    attributes[credExId].age
+                    attributes[credExId].dateofbirth,
+                    attributes[credExId].idnumber
                   )
                 }
               >
@@ -263,7 +303,7 @@ export default function PoliceRequests(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => issueCredential(credExId)}
+              onClick={() => issueCredential(credExId, connId)}
             >
               Expedir credencial
             </Button>
@@ -329,7 +369,8 @@ export default function PoliceRequests(props) {
                     >
                       {renderStep(
                         req.cred_ex_record.state,
-                        req.cred_ex_record.cred_ex_id
+                        req.cred_ex_record.cred_ex_id,
+                        req.cred_ex_record.connection_id
                       )}
                     </Stack>
                   </SubCard>

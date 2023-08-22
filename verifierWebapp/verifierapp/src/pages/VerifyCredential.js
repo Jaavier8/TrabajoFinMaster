@@ -16,7 +16,13 @@ import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
 
 // constants
-import { VERIFIER, HOLDER } from "constants/constants";
+import {
+  VERIFIER,
+  HOLDER,
+  POLICE_ISSUER,
+  ACADEMY_ISSUER,
+  UNIVERSITY_ISSUER,
+} from "constants/constants";
 import { SEND_PROOF_REQUEST, SEND_PRESENTATION } from "constants/jsonBodys";
 
 const MyGrid = styled(Grid)(({ theme }) => ({
@@ -29,17 +35,13 @@ const gridSpacing = 3;
 export default function VerifyCredential(props) {
   const [passportCredential, setPassportCredential] = useState("");
   const [certificateCredential, setCertificateCredential] = useState("");
-  const [age, setAge] = useState("");
+  const [degreeCredential, setDegreeCredential] = useState("");
 
   const [activeStep, setActiveStep] = useState(0);
-
-  const [presExId, setPresExId] = useState("");
 
   const [loadingConnections, setLoadingConnections] = useState(false);
   const [stablishingConnection, setStablishingConnection] = useState(false);
   const [sendingPresentation, setSendingPresentation] = useState(false);
-  const [acceptingOffer, setAcceptingOffer] = useState(false);
-  const [savingCredential, setSavingCredential] = useState(false);
   const [holderConnectionId, setHolderConnectionId] = useState("");
   const [verifierConnectionId, setVerifierConnectionId] = useState("");
 
@@ -125,6 +127,24 @@ export default function VerifyCredential(props) {
   };
 
   const sendProofRequest = async () => {
+    //Get creed_def_ids
+    const passportCredIdRes = await fetch(
+      `${POLICE_ISSUER}/credential-definitions/created`
+    );
+    const passportCredIdJson = await passportCredIdRes.json();
+    const passportCredId = passportCredIdJson["credential_definition_ids"][0];
+    const certificateCredIdRes = await fetch(
+      `${ACADEMY_ISSUER}/credential-definitions/created`
+    );
+    const certificateCredIdJson = await certificateCredIdRes.json();
+    const certificateCredId =
+      certificateCredIdJson["credential_definition_ids"][0];
+    const degreeCredIdRes = await fetch(
+      `${UNIVERSITY_ISSUER}/credential-definitions/created`
+    );
+    const degreeCredIdJson = await degreeCredIdRes.json();
+    const degreeCredId = degreeCredIdJson["credential_definition_ids"][0];
+
     //Proof request verifier
     console.log(verifierConnectionId);
     const proofReqRes = await fetch(`${VERIFIER}/present-proof/send-request`, {
@@ -133,12 +153,21 @@ export default function VerifyCredential(props) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(
-        SEND_PROOF_REQUEST(verifierConnectionId, Math.floor(Date.now() / 1000))
+        SEND_PROOF_REQUEST(
+          verifierConnectionId,
+          Math.floor(Date.now() / 1000),
+          Math.floor(
+            new Date().setFullYear(new Date().getFullYear() - 18) / 1000
+          ),
+          passportCredId,
+          certificateCredId,
+          degreeCredId
+        )
       ),
     });
     if (proofReqRes.status === 200) {
       //Nothing to do
-      console.log(await proofReqRes.json());
+      await new Promise((r) => setTimeout(r, 3000));
     } else {
       console.log("Error al solicitar certificado");
       //TODO: error
@@ -174,7 +203,8 @@ export default function VerifyCredential(props) {
             SEND_PRESENTATION(
               Math.floor(Date.now() / 1000),
               certificateCredential,
-              passportCredential
+              passportCredential,
+              degreeCredential
             )
           ),
         }
@@ -259,10 +289,13 @@ export default function VerifyCredential(props) {
                 >
                   <Typography align="center" variant="subtitle2">
                     Para optar al trabajo, tiene que demonstrar que posee el
-                    título universitario de 'Ingeniero en Telecomunicaciones',
-                    que tiene un nivel B2 de inglés (puntuación mayor que 80), y
-                    que tiene más de 18 años. Introduzca el ID de la credencial
-                    con la que quiere validar cada uno de los requisitos.
+                    título universitario de 'Telecomunicaciones' o 'Ing. de
+                    Datos' (IDs 1 o 2), que tiene un nivel B2 de inglés
+                    (puntuación mayor que 80), y que tiene más de 18 años.
+                    Introduzca el ID de la credencial con la que quiere validar
+                    cada uno de los requisitos. Además de lo anterior, la
+                    empresa tiene que tener acceso a su nombre, apellido, número
+                    de identificación, y grado que ha estudiado.
                   </Typography>
 
                   <TextField
@@ -277,6 +310,13 @@ export default function VerifyCredential(props) {
                     label="Identificador de la credencial que verifique el nivel de inglés"
                     onChange={(event) => {
                       setCertificateCredential(event.target.value);
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    label="Identificador de la credencial que verifique los estudios"
+                    onChange={(event) => {
+                      setDegreeCredential(event.target.value);
                     }}
                   />
 

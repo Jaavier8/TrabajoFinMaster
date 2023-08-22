@@ -8,6 +8,7 @@ import {
   Button,
   CircularProgress,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -26,9 +27,28 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 
 const gridSpacing = 3;
 
+const DEGREE_MAP = {
+  tel: { id: "1", school: "ETSIT", schoolId: "1" },
+  datos: { id: "2", school: "ETSIT", schoolId: "1" },
+  inf: { id: "3", school: "ETSIINF", schoolId: "2" },
+  ind: { id: "4", school: "ETSII", schoolId: "3" },
+  1: "tel",
+  2: "datos",
+  3: "inf",
+  4: "ind",
+};
+
+const SCHOOL_MAP = {
+  1: "ETSIT",
+  2: "ETSIINF",
+  3: "ETSII",
+};
+
 export default function RequestCredentialUniversity(props) {
   const [degree, setDegree] = useState("");
+  const [degreeId, setDegreeId] = useState("");
   const [school, setSchool] = useState("");
+  const [schoolId, setSchoolId] = useState("");
   const [finalGrade, setFinalGrade] = useState("");
 
   const [activeStep, setActiveStep] = useState(0);
@@ -131,10 +151,12 @@ export default function RequestCredentialUniversity(props) {
             for (const data of offerReceived) {
               switch (data["name"]) {
                 case "degree":
-                  setDegree(data["value"]);
+                  setDegreeId(data["value"]);
+                  setDegree(DEGREE_MAP[data["value"]]);
                   break;
                 case "school":
-                  setSchool(data["value"]);
+                  setSchoolId(data["value"]);
+                  setSchool(SCHOOL_MAP[data["value"]]);
                   break;
                 case "finalgrade":
                   setFinalGrade(data["value"]);
@@ -177,9 +199,8 @@ export default function RequestCredentialUniversity(props) {
         body: JSON.stringify(
           SEND_PROPOSAL_UNIVERSITY(
             universityConnectionId,
-            degree,
-            school,
-            finalGrade,
+            degreeId,
+            schoolId,
             credId,
             schemaId,
             schemaId.slice(-3)
@@ -339,28 +360,47 @@ export default function RequestCredentialUniversity(props) {
                   </Typography>
 
                   <TextField
+                    select
                     fullWidth
                     value={degree}
                     label="Grado"
                     onChange={(event) => {
                       setDegree(event.target.value);
+                      setDegreeId(DEGREE_MAP[event.target.value]["id"]);
+                      setSchool(DEGREE_MAP[event.target.value]["school"]);
+                      setSchoolId(DEGREE_MAP[event.target.value]["schoolId"]);
                     }}
+                  >
+                    <MenuItem key={1} value={"tel"}>
+                      Telecomunicaciones
+                    </MenuItem>
+                    <MenuItem key={2} value={"datos"}>
+                      Ing. Datos
+                    </MenuItem>
+                    <MenuItem key={3} value={"inf"}>
+                      Informática
+                    </MenuItem>
+                    <MenuItem key={4} value={"ind"}>
+                      Industriales
+                    </MenuItem>
+                  </TextField>
+                  <TextField
+                    fullWidth
+                    disabled
+                    value={degreeId}
+                    label="ID del Grado (El que aparece en la credencial)"
                   />
                   <TextField
                     fullWidth
+                    disabled
                     value={school}
                     label="Escuela"
-                    onChange={(event) => {
-                      setSchool(event.target.value);
-                    }}
                   />
                   <TextField
                     fullWidth
-                    value={finalGrade}
-                    label="Nota final"
-                    onChange={(event) => {
-                      setFinalGrade(event.target.value);
-                    }}
+                    disabled
+                    value={schoolId}
+                    label="ID de la Escuela (El que aparece en la credencial)"
                   />
 
                   <Button
@@ -404,22 +444,48 @@ export default function RequestCredentialUniversity(props) {
                   </Typography>
 
                   <TextField
+                    select
                     fullWidth
                     disabled
                     value={degree}
                     label="Grado"
                     onChange={(event) => {
                       setDegree(event.target.value);
+                      setDegreeId(DEGREE_MAP[event.target.value]["id"]);
+                      setSchool(DEGREE_MAP[event.target.value]["school"]);
+                      setSchoolId(DEGREE_MAP[event.target.value]["schoolId"]);
                     }}
+                  >
+                    <MenuItem key={1} value={"tel"}>
+                      Telecomunicaciones
+                    </MenuItem>
+                    <MenuItem key={2} value={"datos"}>
+                      Ing. Datos
+                    </MenuItem>
+                    <MenuItem key={3} value={"inf"}>
+                      Informática
+                    </MenuItem>
+                    <MenuItem key={4} value={"ind"}>
+                      Industriales
+                    </MenuItem>
+                  </TextField>
+                  <TextField
+                    fullWidth
+                    disabled
+                    value={degreeId}
+                    label="ID del Grado (El que aparece en la credencial)"
                   />
                   <TextField
                     fullWidth
                     disabled
                     value={school}
                     label="Escuela"
-                    onChange={(event) => {
-                      setSchool(event.target.value);
-                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    disabled
+                    value={schoolId}
+                    label="ID de la Escuela (El que aparece en la credencial)"
                   />
                   <TextField
                     fullWidth

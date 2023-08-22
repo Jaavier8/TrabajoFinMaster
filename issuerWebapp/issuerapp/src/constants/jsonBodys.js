@@ -2,7 +2,8 @@ export const SEND_PROPOSAL_POLICE = (
   policeConnection,
   firstName,
   lastName,
-  age,
+  dateOfBirth,
+  idNumber,
   credId,
   schemaId,
   schemaVersion
@@ -21,9 +22,13 @@ export const SEND_PROPOSAL_POLICE = (
           value: firstName,
         },
         {
-          name: "age",
-          value: age,
+          name: "dateofbirth",
+          value: dateOfBirth,
         },
+        {
+          name: "idnumber",
+          value: idNumber,
+        }
       ],
     },
     filter: {
@@ -41,8 +46,7 @@ export const SEND_PROPOSAL_POLICE = (
 
 export const SEND_PROPOSAL_ACADEMY = (
   academyConnection,
-  language,
-  score,
+  languageId,
   credId,
   schemaId,
   schemaVersion
@@ -54,12 +58,12 @@ export const SEND_PROPOSAL_ACADEMY = (
       attributes: [
         {
           name: "language",
-          value: language,
+          value: languageId,
         },
         {
           name: "score",
-          value: score,
-        }
+          value: "",
+        },
       ],
     },
     filter: {
@@ -77,9 +81,8 @@ export const SEND_PROPOSAL_ACADEMY = (
 
 export const SEND_PROPOSAL_UNIVERSITY = (
   universityConnection,
-  degree,
-  school,
-  finalGrade,
+  degreeId,
+  schoolId,
   credId,
   schemaId,
   schemaVersion
@@ -91,16 +94,16 @@ export const SEND_PROPOSAL_UNIVERSITY = (
       attributes: [
         {
           name: "degree",
-          value: degree,
+          value: degreeId,
         },
         {
           name: "school",
-          value: school,
+          value: schoolId,
         },
         {
           name: "finalgrade",
-          value: finalGrade,
-        }
+          value: "",
+        },
       ],
     },
     filter: {
@@ -119,7 +122,8 @@ export const SEND_PROPOSAL_UNIVERSITY = (
 export const SEND_OFFER_POLICE = (
   firstName,
   lastName,
-  age,
+  dateOfBirth,
+  idNumber,
   credId,
   schemaId,
   schemaVersion
@@ -137,9 +141,13 @@ export const SEND_OFFER_POLICE = (
           value: firstName,
         },
         {
-          name: "age",
-          value: age,
+          name: "dateofbirth",
+          value: dateOfBirth,
         },
+        {
+          name: "idnumber",
+          value: idNumber,
+        }
       ],
     },
     filter: {
@@ -173,7 +181,7 @@ export const SEND_OFFER_ACADEMY = (
         {
           name: "score",
           value: score,
-        }
+        },
       ],
     },
     filter: {
@@ -212,7 +220,7 @@ export const SEND_OFFER_UNIVERSITY = (
         {
           name: "finalgrade",
           value: finalGrade,
-        }
+        },
       ],
     },
     filter: {
@@ -225,5 +233,15 @@ export const SEND_OFFER_UNIVERSITY = (
         schema_version: schemaVersion,
       },
     },
+  };
+};
+
+export const REVOKE_CREDENTIAL = (connId, credExId) => {
+  return {
+    comment: "",
+    connection_id: connId,
+    cred_ex_id: credExId,
+    notify: false,
+    publish: true,
   };
 };

@@ -133,7 +133,7 @@ export default function UniversityRequests(props) {
     }
   };
 
-  const issueCredential = async (credExId) => {
+  const issueCredential = async (credExId, connId) => {
     const issueCred = await fetch(
       `${UNIVERSITY_ISSUER}/issue-credential-2.0/records/${credExId}/issue`,
       {
@@ -145,6 +145,17 @@ export default function UniversityRequests(props) {
       }
     );
     if (issueCred.status === 200) {
+      let universityCredentials =
+        JSON.parse(localStorage.getItem("universityCredentials")) || [];
+      universityCredentials.push({
+        connId,
+        credExId,
+        attrs: attributes[credExId],
+      });
+      localStorage.setItem(
+        "universityCredentials",
+        JSON.stringify(universityCredentials)
+      );
       reloadCredentialRequests();
     } else {
       console.log("Error expediendo credencial");
@@ -168,7 +179,7 @@ export default function UniversityRequests(props) {
     }
   };
 
-  const renderStep = (state, credExId) => {
+  const renderStep = (state, credExId, connId) => {
     switch (state) {
       case "proposal-received":
         return (
@@ -263,7 +274,7 @@ export default function UniversityRequests(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => issueCredential(credExId)}
+              onClick={() => issueCredential(credExId, connId)}
             >
               Expedir credencial
             </Button>
@@ -329,7 +340,8 @@ export default function UniversityRequests(props) {
                     >
                       {renderStep(
                         req.cred_ex_record.state,
-                        req.cred_ex_record.cred_ex_id
+                        req.cred_ex_record.cred_ex_id,
+                        req.cred_ex_record.connection_id
                       )}
                     </Stack>
                   </SubCard>

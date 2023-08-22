@@ -132,7 +132,7 @@ export default function AcademyRequests(props) {
     }
   };
 
-  const issueCredential = async (credExId) => {
+  const issueCredential = async (credExId, connId) => {
     const issueCred = await fetch(
       `${ACADEMY_ISSUER}/issue-credential-2.0/records/${credExId}/issue`,
       {
@@ -144,6 +144,17 @@ export default function AcademyRequests(props) {
       }
     );
     if (issueCred.status === 200) {
+      let academyCredentials =
+        JSON.parse(localStorage.getItem("academyCredentials")) || [];
+      academyCredentials.push({
+        connId,
+        credExId,
+        attrs: attributes[credExId],
+      });
+      localStorage.setItem(
+        "academyCredentials",
+        JSON.stringify(academyCredentials)
+      );
       reloadCredentialRequests();
     } else {
       console.log("Error expediendo credencial");
@@ -167,7 +178,7 @@ export default function AcademyRequests(props) {
     }
   };
 
-  const renderStep = (state, credExId) => {
+  const renderStep = (state, credExId, connId) => {
     switch (state) {
       case "proposal-received":
         return (
@@ -247,7 +258,7 @@ export default function AcademyRequests(props) {
             <Button
               fullWidth
               variant="outlined"
-              onClick={() => issueCredential(credExId)}
+              onClick={() => issueCredential(credExId, connId)}
             >
               Expedir credencial
             </Button>
@@ -304,7 +315,8 @@ export default function AcademyRequests(props) {
                     >
                       {renderStep(
                         req.cred_ex_record.state,
-                        req.cred_ex_record.cred_ex_id
+                        req.cred_ex_record.cred_ex_id,
+                        req.cred_ex_record.connection_id
                       )}
                     </Stack>
                   </SubCard>

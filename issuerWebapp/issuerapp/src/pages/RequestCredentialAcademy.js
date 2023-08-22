@@ -8,6 +8,7 @@ import {
   Button,
   CircularProgress,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -19,7 +20,6 @@ import MainCard from "components/MainCard";
 import { ACADEMY_ISSUER, HOLDER } from "constants/constants";
 import { SEND_PROPOSAL_ACADEMY } from "constants/jsonBodys";
 
-
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
   justifyContent: "center",
@@ -27,9 +27,18 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 
 const gridSpacing = 3;
 
-export default function RequestCredentialAcademy(props) {
+const LANGUAGE_MAP = {
+  english: "1",
+  french: "2",
+  spanish: "3",
+  1: "english",
+  2: "french",
+  3: "spanish",
+};
 
+export default function RequestCredentialAcademy(props) {
   const [language, setLanguage] = useState("");
+  const [languageId, setLanguageId] = useState("");
   const [score, setScore] = useState("");
   const [age, setAge] = useState("");
 
@@ -133,7 +142,8 @@ export default function RequestCredentialAcademy(props) {
             for (const data of offerReceived) {
               switch (data["name"]) {
                 case "language":
-                  setLanguage(data["value"]);
+                  setLanguageId(data["value"]);
+                  setLanguage(LANGUAGE_MAP[data["value"]])
                   break;
                 case "score":
                   setScore(data["value"]);
@@ -158,14 +168,12 @@ export default function RequestCredentialAcademy(props) {
       `${ACADEMY_ISSUER}/credential-definitions/created`
     );
     const credIdResJson = await credIdRes.json();
-    const credId = credIdResJson['credential_definition_ids'][0];
+    const credId = credIdResJson["credential_definition_ids"][0];
 
     //Get schemaId and version
-    const schemaIdRes = await fetch(
-      `${ACADEMY_ISSUER}/schemas/created`
-    );
+    const schemaIdRes = await fetch(`${ACADEMY_ISSUER}/schemas/created`);
     const schemaIdResJson = await schemaIdRes.json();
-    const schemaId = schemaIdResJson['schema_ids'][0];
+    const schemaId = schemaIdResJson["schema_ids"][0];
 
     //Send proposal
     const reqCert = await fetch(
@@ -176,7 +184,13 @@ export default function RequestCredentialAcademy(props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(
-          SEND_PROPOSAL_ACADEMY(academyConnectionId, language, score, credId, schemaId, schemaId.slice(-3))
+          SEND_PROPOSAL_ACADEMY(
+            academyConnectionId,
+            languageId,
+            credId,
+            schemaId,
+            schemaId.slice(-3)
+          )
         ),
       }
     );
@@ -332,18 +346,30 @@ export default function RequestCredentialAcademy(props) {
                   </Typography>
 
                   <TextField
+                    select
                     fullWidth
+                    value={language}
                     label="Idioma"
                     onChange={(event) => {
                       setLanguage(event.target.value);
+                      setLanguageId(LANGUAGE_MAP[event.target.value]);
                     }}
-                  />
+                  >
+                    <MenuItem key={1} value={"english"}>
+                      Inglés
+                    </MenuItem>
+                    <MenuItem key={2} value={"french"}>
+                      Francés
+                    </MenuItem>
+                    <MenuItem key={3} value={"spanish"}>
+                      Español
+                    </MenuItem>
+                  </TextField>
                   <TextField
                     fullWidth
-                    label="Nota"
-                    onChange={(event) => {
-                      setScore(event.target.value);
-                    }}
+                    value={languageId}
+                    disabled
+                    label="ID del Idioma (El que aparece en la credencial)"
                   />
 
                   <Button
@@ -387,10 +413,30 @@ export default function RequestCredentialAcademy(props) {
                   </Typography>
 
                   <TextField
+                    select
                     fullWidth
-                    disabled
                     value={language}
                     label="Idioma"
+                    onChange={(event) => {
+                      setLanguage(event.target.value);
+                      setLanguageId(LANGUAGE_MAP[event.target.value]);
+                    }}
+                  >
+                    <MenuItem key={1} value={"english"}>
+                      Inglés
+                    </MenuItem>
+                    <MenuItem key={2} value={"french"}>
+                      Francés
+                    </MenuItem>
+                    <MenuItem key={3} value={"spanish"}>
+                      Español
+                    </MenuItem>
+                  </TextField>
+                  <TextField
+                    fullWidth
+                    disabled
+                    value={languageId}
+                    label="ID del Idioma (El que aparece en la credencial)"
                     onChange={(event) => {
                       setLanguage(event.target.value);
                     }}

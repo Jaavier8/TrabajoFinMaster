@@ -9,6 +9,9 @@ import {
   CircularProgress,
   TextField,
 } from "@mui/material";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { styled } from "@mui/material/styles";
 
 // project imports
@@ -19,7 +22,6 @@ import MainCard from "components/MainCard";
 import { POLICE_ISSUER, HOLDER } from "constants/constants";
 import { SEND_PROPOSAL_POLICE } from "constants/jsonBodys";
 
-
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
   justifyContent: "center",
@@ -28,10 +30,10 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 const gridSpacing = 3;
 
 export default function RequestCredentialPolice(props) {
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [age, setAge] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [idNumber, setIdNumber] = useState("");
 
   const [activeStep, setActiveStep] = useState(0);
 
@@ -122,17 +124,14 @@ export default function RequestCredentialPolice(props) {
         );
         const credRecordsJson = await credRecords.json();
         for (const record of credRecordsJson["results"]) {
-          console.log("1: " + credExId);
           if (
             record["cred_ex_record"]["cred_ex_id"] === credExId &&
             record["cred_ex_record"]["state"] === "offer-received"
           ) {
-            console.log("2");
             const offerReceived =
               record["cred_ex_record"]["cred_offer"]["credential_preview"][
                 "attributes"
               ];
-            console.log("3");
             for (const data of offerReceived) {
               switch (data["name"]) {
                 case "lastname":
@@ -141,14 +140,16 @@ export default function RequestCredentialPolice(props) {
                 case "firstname":
                   setFirstName(data["value"]);
                   break;
-                case "age":
-                  setAge(data["value"]);
+                case "dateofbirth":
+                  setDateOfBirth(data["value"]);
+                  break;
+                case "idnumber":
+                  setIdNumber(data["value"]);
                   break;
                 default:
                   break;
               }
             }
-            console.log("4");
             clearInterval(interval);
             resolve();
           }
@@ -165,14 +166,12 @@ export default function RequestCredentialPolice(props) {
       `${POLICE_ISSUER}/credential-definitions/created`
     );
     const credIdResJson = await credIdRes.json();
-    const credId = credIdResJson['credential_definition_ids'][0];
+    const credId = credIdResJson["credential_definition_ids"][0];
 
     //Get schemaId and version
-    const schemaIdRes = await fetch(
-      `${POLICE_ISSUER}/schemas/created`
-    );
+    const schemaIdRes = await fetch(`${POLICE_ISSUER}/schemas/created`);
     const schemaIdResJson = await schemaIdRes.json();
-    const schemaId = schemaIdResJson['schema_ids'][0];
+    const schemaId = schemaIdResJson["schema_ids"][0];
 
     //Issue credential
     const reqCert = await fetch(
@@ -183,7 +182,16 @@ export default function RequestCredentialPolice(props) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(
-          SEND_PROPOSAL_POLICE(policeConnectionId, firstName, lastName, age, credId, schemaId, schemaId.slice(-3))
+          SEND_PROPOSAL_POLICE(
+            policeConnectionId,
+            firstName,
+            lastName,
+            Math.floor(new Date(dateOfBirth).getTime() / 1000).toString(),
+            idNumber,
+            credId,
+            schemaId,
+            schemaId.slice(-3)
+          )
         ),
       }
     );
@@ -354,12 +362,22 @@ export default function RequestCredentialPolice(props) {
                       setLastName(event.target.value);
                     }}
                   />
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DatePicker
+                      label="Fecha de nacimiento"
+                      value={dateOfBirth}
+                      onChange={(date) => {
+                        setDateOfBirth(date);
+                      }}
+                      sx={{ width: "100%" }}
+                    />
+                  </LocalizationProvider>
                   <TextField
                     fullWidth
-                    value={age}
-                    label="Edad"
+                    value={idNumber}
+                    label="Nº de identificación"
                     onChange={(event) => {
-                      setAge(event.target.value);
+                      setIdNumber(event.target.value);
                     }}
                   />
 
@@ -424,10 +442,19 @@ export default function RequestCredentialPolice(props) {
                   <TextField
                     fullWidth
                     disabled
-                    value={age}
-                    label="Edad"
+                    value={lastName}
+                    label="Fecha de nacimiento (En segundos desde 1970)"
                     onChange={(event) => {
-                      setAge(event.target.value);
+                      setDateOfBirth(event.target.value);
+                    }}
+                  />
+                  <TextField
+                    fullWidth
+                    disabled
+                    value={idNumber}
+                    label="Nº de identificación"
+                    onChange={(event) => {
+                      setIdNumber(event.target.value);
                     }}
                   />
 

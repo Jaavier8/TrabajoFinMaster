@@ -35,7 +35,7 @@ const PAGES = [
     name: "Esquemas/Credenciales",
     img: schema,
     path: "/university/scred",
-    message: "Pulse el siguiente botón para ser redirigido a la página donde se podrán ver todos los esquemas y credenciales definidas por Policia."
+    message: "Pulse el siguiente botón para ser redirigido a la página donde se podrán ver todos los esquemas y credenciales definidas por Universidad."
   },
   {
     name: "Credenciales solicitadas",

@@ -16,6 +16,9 @@ import AcademyRequests from "pages/AcademyRequests";
 import University from "pages/University";
 import UniversityScred from "pages/UniversityScred";
 import UniversityRequests from "pages/UniversityRequests";
+import PoliceCredentials from "pages/PoliceCredentials";
+import AcademyCredentials from "pages/AcademyCredentials";
+import UniversityCredentials from "pages/UniversityCredentials";
 
 export default function ThemeRoutes() {
   return useRoutes([
@@ -63,7 +66,7 @@ export default function ThemeRoutes() {
             },
             {
               path: "issued",
-              element: <PoliceRequests />
+              element: <PoliceCredentials />
             }
           ]
         },
@@ -85,7 +88,7 @@ export default function ThemeRoutes() {
             },
             {
               path: "issued",
-              element: <PoliceRequests />
+              element: <UniversityCredentials />
             }
           ]
         },
@@ -107,7 +110,7 @@ export default function ThemeRoutes() {
             },
             {
               path: "issued",
-              element: <PoliceRequests />
+              element: <AcademyCredentials />
             }
           ]
         },

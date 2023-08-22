@@ -32,10 +32,9 @@ export default function Proofs(props) {
       if (proofReqRes.status === 200) {
         const proofReqResJson = await proofReqRes.json();
 
-        let verifiedProofs = []
-        for (const proof of proofReqResJson["results"]){
-          if(proof["verified"])
-            verifiedProofs.push(proof)
+        let verifiedProofs = [];
+        for (const proof of proofReqResJson["results"]) {
+          if (proof["verified"]) verifiedProofs.push(proof);
         }
 
         setProofs(verifiedProofs);
@@ -76,9 +75,25 @@ export default function Proofs(props) {
                 <Grid item xs={6} key={index}>
                   <SubCard
                     title={
-                      "Nombre: " +
-                      proof.presentation.requested_proof.revealed_attrs
-                        .firstName.raw
+                      <>
+                        {proof.verified === "true" ? (
+                          <Typography
+                            variant="h2"
+                            sx={{ alignSelf: "center", color: "green" }}
+                          >
+                            Válido
+                          </Typography>
+                        ) : (
+                          <Typography
+                            variant="h2"
+                            sx={{ alignSelf: "center", color: "red" }}
+                          >
+                            No Válido
+                          </Typography>
+                        )}
+                        <br />
+                        {"ID de la conexión: " + proof.connection_id}
+                      </>
                     }
                   >
                     <Stack
@@ -87,9 +102,19 @@ export default function Proofs(props) {
                       alignItems="flex-start"
                       spacing={2}
                     >
-                      <Typography variant="subtitle1">
-                        {"Válido: " + proof.verified}
-                      </Typography>
+                      {Object.keys(
+                        proof.presentation.requested_proof.revealed_attrs
+                      ).map((attr, index) => {
+                        return (
+                          <Typography variant="subtitle1" key={index}>
+                            {attr +
+                              ": " +
+                              proof.presentation.requested_proof.revealed_attrs[
+                                attr
+                              ].raw}
+                          </Typography>
+                        );
+                      })}
                     </Stack>
                   </SubCard>
                 </Grid>
