@@ -1,7 +1,6 @@
 import { useRoutes } from "react-router-dom";
 
 import MainLayout from "pages/MainLayout";
-//import Events from "pages/Events";
 import VerifyCredential from "pages/VerifyCredential";
 import Proofs from "pages/Proofs"
 

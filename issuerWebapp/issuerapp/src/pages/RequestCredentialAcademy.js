@@ -40,7 +40,6 @@ export default function RequestCredentialAcademy(props) {
   const [language, setLanguage] = useState("");
   const [languageId, setLanguageId] = useState("");
   const [score, setScore] = useState("");
-  const [age, setAge] = useState("");
 
   const [activeStep, setActiveStep] = useState(0);
 

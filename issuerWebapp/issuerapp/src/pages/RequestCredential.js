@@ -1,12 +1,9 @@
-import { useState, useEffect } from "react";
-
 // material-ui
 import {
   Grid,
   Typography,
   Stack,
   Button,
-  CircularProgress,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -17,22 +14,10 @@ import SubCard from "components/SubCard";
 import MainCard from "components/MainCard";
 
 // icons
-import AddIcon from "@mui/icons-material/Add";
 import identification from "../assets/images/identification.png";
 import school from "../assets/images/school.png";
 import language from "../assets/images/language.png";
 
-// modals
-import NewEventModal from "components/NewEventModal";
-
-// constants
-import { POLICE_ISSUER } from "constants/constants";
-
-const StyledImage = styled("img")(({ theme }) => ({
-  "&:hover": {
-    transform: "scale(1.1)",
-  },
-}));
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -61,15 +46,6 @@ const CREDENTIALS = [
 
 export default function RequestCredential(props) {
   const navigate = useNavigate();
-
-  const [events, setEvents] = useState([]);
-  const [eventsPosters, setEventsPosters] = useState({});
-  const [showNewEventModal, setShowNewEventModal] = useState(false);
-
-  const [showImageViewerModal, setShowImageViewerModal] = useState(false);
-  const [imageSelected, setImageSelected] = useState([]);
-
-  const [loadingEvents, setLoadingEvents] = useState(false);
 
   return (
     <>
@@ -115,18 +91,6 @@ export default function RequestCredential(props) {
           })}
         </MyGrid>
       </MainCard>
-
-      <NewEventModal
-        show={showNewEventModal}
-        onClose={() => setShowNewEventModal(false)}
-        onAddEvent={(event, eventPoster) => {
-          setEvents([...events, event]);
-          setEventsPosters({
-            ...eventsPosters,
-            [event._id]: eventPoster,
-          });
-        }}
-      />
     </>
   );
 }

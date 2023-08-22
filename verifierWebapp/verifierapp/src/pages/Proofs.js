@@ -19,8 +19,6 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 const gridSpacing = 3;
 
 export default function Proofs(props) {
-  const [schemas, setSchemas] = useState([]);
-  const [credentialsDef, setCredentialsDef] = useState([]);
 
   const [loadingProofs, setLoadingProofs] = useState(false);
   const [proofs, setProofs] = useState([]);

@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 // material-ui
 import { styled, useTheme } from '@mui/material/styles';
-import { AppBar, Box, CssBaseline, Toolbar, useMediaQuery } from '@mui/material';
+import { AppBar, Box, CssBaseline, Toolbar } from '@mui/material';
 
 // project imports
 import Header from 'components/Header'
@@ -58,7 +57,6 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({
 
 const MainLayout = () => {
     const theme = useTheme();
-    const matchDownMd = useMediaQuery(theme.breakpoints.down('lg'));
 
     return (
         <Box sx={{ display: 'flex' }}>

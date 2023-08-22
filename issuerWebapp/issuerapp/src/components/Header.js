@@ -1,11 +1,6 @@
 // material-ui
-import { useTheme } from "@mui/material/styles";
 import {
-  Avatar,
   Box,
-  ButtonBase,
-  Menu,
-  MenuItem,
   Typography,
 } from "@mui/material";
 
@@ -21,7 +16,6 @@ import { Stack } from "@mui/system";
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = () => {
-  const theme = useTheme();
   const location = useLocation();
 
   return (

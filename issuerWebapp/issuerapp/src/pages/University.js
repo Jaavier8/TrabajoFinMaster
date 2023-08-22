@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 // material-ui
 import {
   Grid,
@@ -19,9 +17,6 @@ import MainCard from "components/MainCard";
 import schema from "../assets/images/schema.png";
 import requests from "../assets/images/requests.png";
 import issued from "../assets/images/issued.png"
-
-// modals
-import NewEventModal from "components/NewEventModal";
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",

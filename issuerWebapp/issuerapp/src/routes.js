@@ -1,8 +1,6 @@
 import { Outlet, useRoutes } from "react-router-dom";
 
 import MainLayout from "pages/MainLayout";
-//import Events from "pages/Events";
-import Connections from "pages/Connections";
 import RequestCredential from "pages/RequestCredential";
 import RequestCredentialPolice from "pages/RequestCredentialPolice";
 import RequestCredentialAcademy from "pages/RequestCredentialAcademy";
@@ -113,10 +111,6 @@ export default function ThemeRoutes() {
               element: <AcademyCredentials />
             }
           ]
-        },
-        {
-          path: "connections",
-          element: <Connections />
         }
       ],
     },
