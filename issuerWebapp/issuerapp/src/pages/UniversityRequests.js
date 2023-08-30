@@ -8,6 +8,7 @@ import {
   Button,
   CircularProgress,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -28,6 +29,17 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const gridSpacing = 3;
+
+const DEGREE_MAP = {
+  "Ingeniería en Telecomunicaciones": {
+    id: "1",
+    school: "ETSIT",
+    schoolId: "1",
+  },
+  "Ingeniería de Datos": { id: "2", school: "ETSIT", schoolId: "1" },
+  "Ingeniería Informática": { id: "3", school: "ETSIINF", schoolId: "2" },
+  "Ingeniería Industrial": { id: "4", school: "ETSII", schoolId: "3" },
+};
 
 export default function UniversityRequests(props) {
   const [attributes, setAttributes] = useState({});
@@ -94,7 +106,14 @@ export default function UniversityRequests(props) {
     }
   };
 
-  const sendOffer = async (credExId, degree, school, finalGrade) => {
+  const sendOffer = async (
+    credExId,
+    degree,
+    degreeId,
+    school,
+    schoolId,
+    finalGrade
+  ) => {
     //Get credId
     const credIdRes = await fetch(
       `${UNIVERSITY_ISSUER}/credential-definitions/created`
@@ -117,7 +136,9 @@ export default function UniversityRequests(props) {
         body: JSON.stringify(
           SEND_OFFER_UNIVERSITY(
             degree,
+            degreeId,
             school,
+            schoolId,
             finalGrade,
             credId,
             schemaId,
@@ -185,6 +206,7 @@ export default function UniversityRequests(props) {
         return (
           <>
             <TextField
+              select
               fullWidth
               value={attributes[credExId].degree}
               label="Grado"
@@ -194,28 +216,36 @@ export default function UniversityRequests(props) {
                   [credExId]: {
                     ...prevState[credExId],
                     degree: event.target.value,
+                    degreeid: DEGREE_MAP[event.target.value]["id"],
+                    school: DEGREE_MAP[event.target.value]["school"],
+                    schoolid: DEGREE_MAP[event.target.value]["schoolId"],
                   },
                 }));
               }}
-            />
+            >
+              <MenuItem key={1} value={"Ingeniería en Telecomunicaciones"}>
+                Ingeniería en Telecomunicaciones
+              </MenuItem>
+              <MenuItem key={2} value={"Ingeniería de Datos"}>
+                Ingeniería de Datos
+              </MenuItem>
+              <MenuItem key={3} value={"Ingeniería Informática"}>
+                Ingeniería Informática
+              </MenuItem>
+              <MenuItem key={4} value={"Ingeniería Industrial"}>
+                Ingeniería Industrial
+              </MenuItem>
+            </TextField>
             <TextField
               fullWidth
+              disabled
               value={attributes[credExId].school}
               label="Escuela"
-              onChange={(event) => {
-                setAttributes((prevState) => ({
-                  ...prevState,
-                  [credExId]: {
-                    ...prevState[credExId],
-                    school: event.target.value,
-                  },
-                }));
-              }}
             />
             <TextField
               fullWidth
               value={attributes[credExId].finalgrade}
-              label="Nota final"
+              label="Nota final (sobre 100 y sin decimales)"
               onChange={(event) => {
                 setAttributes((prevState) => ({
                   ...prevState,
@@ -247,7 +277,9 @@ export default function UniversityRequests(props) {
                   sendOffer(
                     credExId,
                     attributes[credExId].degree,
+                    attributes[credExId].degreeid,
                     attributes[credExId].school,
+                    attributes[credExId].schoolid,
                     attributes[credExId].finalgrade
                   )
                 }
@@ -282,6 +314,21 @@ export default function UniversityRequests(props) {
         );
       default:
         break;
+    }
+  };
+
+  const getState = (state) => {
+    switch (state) {
+      case "proposal-received":
+        return "Propuesta Recibida";
+      case "offer-sent":
+        return "Oferta Enviada";
+      case "request-received":
+        return "Petición Recibida";
+      case "credential-issued":
+        return "Credencial Emitida";
+      default:
+        return "Estado Desconocido";
     }
   };
 
@@ -325,7 +372,7 @@ export default function UniversityRequests(props) {
                   <SubCard
                     title={
                       <>
-                        {"Estado: " + req.cred_ex_record.state}
+                        {"Estado: " + getState(req.cred_ex_record.state)}
                         <br />
                         {"ID de la conexión: " +
                           req.cred_ex_record.connection_id}
@@ -335,7 +382,7 @@ export default function UniversityRequests(props) {
                     <Stack
                       direction="column"
                       justifyContent="center"
-                      alignItems="flex-start"
+                      alignItems="center"
                       spacing={2}
                     >
                       {renderStep(

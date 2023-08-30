@@ -314,6 +314,21 @@ export default function PoliceRequests(props) {
     }
   };
 
+  const getState = (state) => {
+    switch (state) {
+      case "proposal-received":
+        return "Propuesta Recibida";
+      case "offer-sent":
+        return "Oferta Enviada";
+      case "request-received":
+        return "Petición Recibida";
+      case "credential-issued":
+        return "Credencial Emitida";
+      default:
+        return "Estado Desconocido";
+    }
+  };
+
   return (
     <>
       <MainCard
@@ -354,7 +369,7 @@ export default function PoliceRequests(props) {
                   <SubCard
                     title={
                       <>
-                        {"Estado: " + req.cred_ex_record.state}
+                        {"Estado: " + getState(req.cred_ex_record.state)}
                         <br />
                         {"ID de la conexión: " +
                           req.cred_ex_record.connection_id}
@@ -364,7 +379,7 @@ export default function PoliceRequests(props) {
                     <Stack
                       direction="column"
                       justifyContent="center"
-                      alignItems="flex-start"
+                      alignItems="center"
                       spacing={2}
                     >
                       {renderStep(

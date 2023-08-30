@@ -38,7 +38,7 @@ const CREDENTIALS = [
     path: "/requestcredential/university"
   },
   {
-    name: "Certificado idiomas",
+    name: "Certificado de idiomas",
     img: language,
     path: "/requestcredential/academy"
   },

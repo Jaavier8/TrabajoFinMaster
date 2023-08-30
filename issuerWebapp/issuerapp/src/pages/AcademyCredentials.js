@@ -16,9 +16,7 @@ import MainCard from "components/MainCard";
 
 // constants
 import { ACADEMY_ISSUER } from "constants/constants";
-import {
-  REVOKE_CREDENTIAL
-} from "constants/jsonBodys";
+import { REVOKE_CREDENTIAL } from "constants/jsonBodys";
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -72,7 +70,10 @@ export default function AcademyCredentials(props) {
     if (deleteReq.status === 200) {
       let newCredentials = credentials;
       newCredentials.splice(index, 1);
-      localStorage.setItem("academyCredentials", JSON.stringify(newCredentials));
+      localStorage.setItem(
+        "academyCredentials",
+        JSON.stringify(newCredentials)
+      );
 
       updateCredentials();
     } else {
@@ -121,17 +122,12 @@ export default function AcademyCredentials(props) {
                       alignItems="flex-start"
                       spacing={2}
                     >
-                      {Object.keys(cred.attrs).map((key, index) => {
-                        return (
-                          <Typography
-                            variant="subtitle1"
-                            gutterBottom
-                            key={index}
-                          >
-                            {key + ": " + cred.attrs[key]}
-                          </Typography>
-                        );
-                      })}
+                      <Typography variant="subtitle1">
+                        {"Idioma: " + cred.attrs["language"]}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Puntuación: " + cred.attrs["score"]}
+                      </Typography>
                       <Button
                         fullWidth
                         variant="contained"

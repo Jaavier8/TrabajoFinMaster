@@ -52,7 +52,7 @@ export const SEND_PROOF_REQUEST = (
           }],
         },
         languageCheck1: {
-          name: "language",
+          name: "languageid",
           p_type: ">=",
           p_value: 1,
           restrictions: [{
@@ -60,7 +60,7 @@ export const SEND_PROOF_REQUEST = (
           }],
         },
         languageCheck2: {
-          name: "language",
+          name: "languageid",
           p_type: "<=",
           p_value: 1,
           restrictions: [{
@@ -70,13 +70,13 @@ export const SEND_PROOF_REQUEST = (
         languageScore: {
           name: "score",
           p_type: ">=",
-          p_value: 75,
+          p_value: 80,
           restrictions: [{
             cred_def_id: certificateCredId
           }],
         },
         degreeCheck1: {
-          name: "degree",
+          name: "degreeid",
           p_type: ">=",
           p_value: 1,
           restrictions: [{
@@ -84,7 +84,7 @@ export const SEND_PROOF_REQUEST = (
           }],
         },
         degreeCheck2: {
-          name: "degree",
+          name: "degreeid",
           p_type: "<=",
           p_value: 2,
           restrictions: [{
@@ -94,7 +94,7 @@ export const SEND_PROOF_REQUEST = (
         degreeScore: {
           name: "finalgrade",
           p_type: ">=",
-          p_value: 8,
+          p_value: 85,
           restrictions: [{
             cred_def_id: degreeCredId
           }],

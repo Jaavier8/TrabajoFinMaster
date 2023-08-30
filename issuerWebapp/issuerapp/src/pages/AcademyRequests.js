@@ -8,6 +8,7 @@ import {
   Button,
   CircularProgress,
   TextField,
+  MenuItem,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
@@ -28,6 +29,12 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const gridSpacing = 3;
+
+const LANGUAGE_MAP = {
+  Inglés: "1",
+  Francés: "2",
+  Español: "3",
+};
 
 export default function AcademyRequests(props) {
   const [attributes, setAttributes] = useState({});
@@ -94,7 +101,7 @@ export default function AcademyRequests(props) {
     }
   };
 
-  const sendOffer = async (credExId, language, score) => {
+  const sendOffer = async (credExId, language, languageId, score) => {
     //Get credId
     const credIdRes = await fetch(
       `${ACADEMY_ISSUER}/credential-definitions/created`
@@ -117,6 +124,7 @@ export default function AcademyRequests(props) {
         body: JSON.stringify(
           SEND_OFFER_ACADEMY(
             language,
+            languageId,
             score,
             credId,
             schemaId,
@@ -193,10 +201,21 @@ export default function AcademyRequests(props) {
                   [credExId]: {
                     ...prevState[credExId],
                     language: event.target.value,
+                    languageid: LANGUAGE_MAP[event.target.value],
                   },
                 }));
               }}
-            />
+            >
+              <MenuItem key={1} value={"Inglés"}>
+                Inglés
+              </MenuItem>
+              <MenuItem key={2} value={"Francés"}>
+                Francés
+              </MenuItem>
+              <MenuItem key={3} value={"Español"}>
+                Español
+              </MenuItem>
+            </TextField>
             <TextField
               fullWidth
               value={attributes[credExId].score}
@@ -232,6 +251,7 @@ export default function AcademyRequests(props) {
                   sendOffer(
                     credExId,
                     attributes[credExId].language,
+                    attributes[credExId].languageid,
                     attributes[credExId].score
                   )
                 }
@@ -266,6 +286,21 @@ export default function AcademyRequests(props) {
         );
       default:
         break;
+    }
+  };
+
+  const getState = (state) => {
+    switch (state) {
+      case "proposal-received":
+        return "Propuesta Recibida";
+      case "offer-sent":
+        return "Oferta Enviada";
+      case "request-received":
+        return "Petición Recibida";
+      case "credential-issued":
+        return "Credencial Emitida";
+      default:
+        return "Estado Desconocido";
     }
   };
 
@@ -306,11 +341,13 @@ export default function AcademyRequests(props) {
             {credReq.map((req, index) => {
               return (
                 <Grid item xs={6} key={index}>
-                  <SubCard title={"Estado: " + req.cred_ex_record.state}>
+                  <SubCard
+                    title={"Estado: " + getState(req.cred_ex_record.state)}
+                  >
                     <Stack
                       direction="column"
                       justifyContent="center"
-                      alignItems="flex-start"
+                      alignItems="center"
                       spacing={2}
                     >
                       {renderStep(

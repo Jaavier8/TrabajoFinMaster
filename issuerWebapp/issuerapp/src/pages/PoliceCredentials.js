@@ -16,9 +16,7 @@ import MainCard from "components/MainCard";
 
 // constants
 import { POLICE_ISSUER } from "constants/constants";
-import {
-  REVOKE_CREDENTIAL
-} from "constants/jsonBodys";
+import { REVOKE_CREDENTIAL } from "constants/jsonBodys";
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -104,6 +102,13 @@ export default function PoliceCredentials(props) {
         ) : (
           <MyGrid container spacing={gridSpacing}>
             {credentials.map((cred, index) => {
+              const date = new Date(parseInt(cred.attrs["dateofbirth"]) * 1000);
+              const simpleDate =
+                date.getDate() +
+                "/" +
+                (date.getMonth() + 1) +
+                "/" +
+                date.getFullYear();
               return (
                 <Grid item xs={6} key={index}>
                   <SubCard
@@ -121,17 +126,19 @@ export default function PoliceCredentials(props) {
                       alignItems="flex-start"
                       spacing={2}
                     >
-                      {Object.keys(cred.attrs).map((key, index) => {
-                        return (
-                          <Typography
-                            variant="subtitle1"
-                            gutterBottom
-                            key={index}
-                          >
-                            {key + ": " + cred.attrs[key]}
-                          </Typography>
-                        );
-                      })}
+                      <Typography variant="subtitle1">
+                        {"Nombre: " + cred.attrs["firstname"]}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Apellido: " + cred.attrs["lastname"]}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Fecha de nacimiento: " + simpleDate}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Número de identificación: " + cred.attrs["idnumber"]}
+                      </Typography>
+
                       <Button
                         fullWidth
                         variant="contained"

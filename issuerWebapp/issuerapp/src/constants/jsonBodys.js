@@ -46,6 +46,7 @@ export const SEND_PROPOSAL_POLICE = (
 
 export const SEND_PROPOSAL_ACADEMY = (
   academyConnection,
+  language,
   languageId,
   credId,
   schemaId,
@@ -58,6 +59,10 @@ export const SEND_PROPOSAL_ACADEMY = (
       attributes: [
         {
           name: "language",
+          value: language,
+        },
+        {
+          name: "languageid",
           value: languageId,
         },
         {
@@ -81,7 +86,9 @@ export const SEND_PROPOSAL_ACADEMY = (
 
 export const SEND_PROPOSAL_UNIVERSITY = (
   universityConnection,
+  degree,
   degreeId,
+  school,
   schoolId,
   credId,
   schemaId,
@@ -94,10 +101,18 @@ export const SEND_PROPOSAL_UNIVERSITY = (
       attributes: [
         {
           name: "degree",
+          value: degree,
+        },
+        {
+          name: "degreeid",
           value: degreeId,
         },
         {
           name: "school",
+          value: school,
+        },
+        {
+          name: "schoolid",
           value: schoolId,
         },
         {
@@ -165,6 +180,7 @@ export const SEND_OFFER_POLICE = (
 
 export const SEND_OFFER_ACADEMY = (
   language,
+  languageId,
   score,
   credId,
   schemaId,
@@ -177,6 +193,10 @@ export const SEND_OFFER_ACADEMY = (
         {
           name: "language",
           value: language,
+        },
+        {
+          name: "languageid",
+          value: languageId,
         },
         {
           name: "score",
@@ -199,7 +219,9 @@ export const SEND_OFFER_ACADEMY = (
 
 export const SEND_OFFER_UNIVERSITY = (
   degree,
+  degreeId,
   school,
+  schoolId,
   finalGrade,
   credId,
   schemaId,
@@ -214,8 +236,16 @@ export const SEND_OFFER_UNIVERSITY = (
           value: degree,
         },
         {
+          name: "degreeid",
+          value: degreeId,
+        },
+        {
           name: "school",
           value: school,
+        },
+        {
+          name: "schoolid",
+          value: schoolId,
         },
         {
           name: "finalgrade",

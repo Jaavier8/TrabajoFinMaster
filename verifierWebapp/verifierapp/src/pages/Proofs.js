@@ -19,7 +19,6 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 const gridSpacing = 3;
 
 export default function Proofs(props) {
-
   const [loadingProofs, setLoadingProofs] = useState(false);
   const [proofs, setProofs] = useState([]);
 
@@ -49,7 +48,7 @@ export default function Proofs(props) {
 
   return (
     <>
-      <MainCard title="Solicitudes" secondary={<></>}>
+      <MainCard title="Solicitudes presentadas" secondary={<></>}>
         {proofs.length === 0 ? (
           <Stack>
             <Typography align="center">No hay solicitudes</Typography>
@@ -77,20 +76,27 @@ export default function Proofs(props) {
                         {proof.verified === "true" ? (
                           <Typography
                             variant="h2"
-                            sx={{ alignSelf: "center", color: "green" }}
+                            align="center"
+                            sx={{ color: "green" }}
                           >
                             Válido
                           </Typography>
                         ) : (
                           <Typography
                             variant="h2"
-                            sx={{ alignSelf: "center", color: "red" }}
+                            align="center"
+                            sx={{ color: "red" }}
                           >
                             No Válido
                           </Typography>
                         )}
                         <br />
-                        {"ID de la conexión: " + proof.connection_id}
+                        <Typography
+                          variant="h5"
+                          align="center"
+                        >
+                          {"ID de la conexión: " + proof.connection_id}
+                        </Typography>
                       </>
                     }
                   >
@@ -100,19 +106,24 @@ export default function Proofs(props) {
                       alignItems="flex-start"
                       spacing={2}
                     >
-                      {Object.keys(
-                        proof.presentation.requested_proof.revealed_attrs
-                      ).map((attr, index) => {
-                        return (
-                          <Typography variant="subtitle1" key={index}>
-                            {attr +
-                              ": " +
-                              proof.presentation.requested_proof.revealed_attrs[
-                                attr
-                              ].raw}
-                          </Typography>
-                        );
-                      })}
+                      <Typography variant="subtitle1">
+                        {"Nombre: " +
+                          proof.presentation.requested_proof.revealed_attrs[
+                            "firstName"
+                          ].raw}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Apellido: " +
+                          proof.presentation.requested_proof.revealed_attrs[
+                            "lastName"
+                          ].raw}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Número de identificación: " +
+                          proof.presentation.requested_proof.revealed_attrs[
+                            "idNumber"
+                          ].raw}
+                      </Typography>
                     </Stack>
                   </SubCard>
                 </Grid>

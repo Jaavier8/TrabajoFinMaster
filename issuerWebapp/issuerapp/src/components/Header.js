@@ -1,8 +1,5 @@
 // material-ui
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 import { useLocation } from "react-router-dom";
 
@@ -17,6 +14,19 @@ import { Stack } from "@mui/system";
 
 const Header = () => {
   const location = useLocation();
+
+  const getIssuer = (issuer) => {
+    switch (issuer) {
+      case "police":
+        return "Policía";
+      case "academy":
+        return "Academia";
+      case "university":
+        return "Universidad";
+      default:
+        return "";
+    }
+  };
 
   return (
     <Stack
@@ -44,8 +54,7 @@ const Header = () => {
       >
         {!location.pathname.includes("requestcredential") ? (
           <Typography variant="h1" align="right" style={{ color: "red" }}>
-            {location.pathname.split("/")[1].charAt(0).toUpperCase() +
-              location.pathname.split("/")[1].slice(1)}
+            {getIssuer(location.pathname.split("/")[1])}
           </Typography>
         ) : null}
       </Box>

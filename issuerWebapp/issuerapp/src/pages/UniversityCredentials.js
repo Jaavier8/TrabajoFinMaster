@@ -16,9 +16,7 @@ import MainCard from "components/MainCard";
 
 // constants
 import { UNIVERSITY_ISSUER } from "constants/constants";
-import {
-  REVOKE_CREDENTIAL
-} from "constants/jsonBodys";
+import { REVOKE_CREDENTIAL } from "constants/jsonBodys";
 
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
@@ -35,7 +33,9 @@ export default function UniversityCredentials(props) {
     async function getCredentials() {
       setLoadingCredentials(true);
 
-      const universityCredentials = localStorage.getItem("universityCredentials");
+      const universityCredentials = localStorage.getItem(
+        "universityCredentials"
+      );
       setCredentials(JSON.parse(universityCredentials) || []);
 
       await new Promise((r) => setTimeout(r, 2000));
@@ -72,7 +72,10 @@ export default function UniversityCredentials(props) {
     if (deleteReq.status === 200) {
       let newCredentials = credentials;
       newCredentials.splice(index, 1);
-      localStorage.setItem("universityCredentials", JSON.stringify(newCredentials));
+      localStorage.setItem(
+        "universityCredentials",
+        JSON.stringify(newCredentials)
+      );
 
       updateCredentials();
     } else {
@@ -121,17 +124,15 @@ export default function UniversityCredentials(props) {
                       alignItems="flex-start"
                       spacing={2}
                     >
-                      {Object.keys(cred.attrs).map((key, index) => {
-                        return (
-                          <Typography
-                            variant="subtitle1"
-                            gutterBottom
-                            key={index}
-                          >
-                            {key + ": " + cred.attrs[key]}
-                          </Typography>
-                        );
-                      })}
+                      <Typography variant="subtitle1">
+                        {"Grado: " + cred.attrs["degree"]}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Escuela: " + cred.attrs["school"]}
+                      </Typography>
+                      <Typography variant="subtitle1">
+                        {"Nota media final: " + cred.attrs["finalgrade"]}
+                      </Typography>
                       <Button
                         fullWidth
                         variant="contained"

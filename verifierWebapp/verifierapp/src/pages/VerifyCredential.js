@@ -25,6 +25,9 @@ import {
 } from "constants/constants";
 import { SEND_PROOF_REQUEST, SEND_PRESENTATION } from "constants/jsonBodys";
 
+// icon
+import BookIcon from "@mui/icons-material/Book";
+
 const MyGrid = styled(Grid)(({ theme }) => ({
   gridAutoRows: "1fr",
   justifyContent: "center",
@@ -157,7 +160,7 @@ export default function VerifyCredential(props) {
           verifierConnectionId,
           Math.floor(Date.now() / 1000),
           Math.floor(
-            new Date().setFullYear(new Date().getFullYear() - 18) / 1000
+            new Date().setFullYear(new Date().getFullYear() - 25) / 1000
           ),
           passportCredId,
           certificateCredId,
@@ -279,7 +282,13 @@ export default function VerifyCredential(props) {
         ) : (
           <MyGrid container spacing={gridSpacing}>
             <Grid item xs={6}>
-              <SubCard title={"ID de la conexión: " + holderConnectionId}>
+              <SubCard
+                title={
+                  <Typography variant="h5" align="center">
+                    {"ID de la conexión: " + holderConnectionId}
+                  </Typography>
+                }
+              >
                 <Stack
                   direction="column"
                   justifyContent="center"
@@ -289,9 +298,13 @@ export default function VerifyCredential(props) {
                 >
                   <Typography align="center" variant="subtitle2">
                     Para optar al trabajo, tiene que demonstrar que posee el
-                    título universitario de 'Telecomunicaciones' o 'Ing. de
-                    Datos' (IDs 1 o 2), que tiene un nivel B2 de inglés
-                    (puntuación mayor que 80), y que tiene más de 18 años.
+                    título universitario de 'Ingeniería en Telecomunicaciones' o
+                    'Ingeniería de Datos' con una nota media mayor a 8,5, que
+                    tiene un nivel B2 de inglés (puntuación mayor que 80), y que
+                    tiene más de 25 años.
+                  </Typography>
+                  <br />
+                  <Typography align="center" variant="subtitle2">
                     Introduzca el ID de la credencial con la que quiere validar
                     cada uno de los requisitos. Además de lo anterior, la
                     empresa tiene que tener acceso a su nombre, apellido, número
@@ -336,7 +349,13 @@ export default function VerifyCredential(props) {
         return (
           <MyGrid container spacing={gridSpacing}>
             <Grid item xs={6}>
-              <SubCard title={"ID de la conexión: " + holderConnectionId}>
+              <SubCard
+                title={
+                  <Typography variant="h5" align="center">
+                    {"ID de la conexión: " + holderConnectionId}
+                  </Typography>
+                }
+              >
                 <Stack
                   direction="column"
                   justifyContent="center"
@@ -356,7 +375,13 @@ export default function VerifyCredential(props) {
         return (
           <MyGrid container spacing={gridSpacing}>
             <Grid item xs={6}>
-              <SubCard title={"ID de la conexión: " + holderConnectionId}>
+              <SubCard
+                title={
+                  <Typography variant="h5" align="center">
+                    {"ID de la conexión: " + holderConnectionId}
+                  </Typography>
+                }
+              >
                 <Stack
                   direction="column"
                   justifyContent="center"
@@ -381,8 +406,18 @@ export default function VerifyCredential(props) {
   return (
     <>
       <MainCard
-        title="Solicitud de certificado 'Identificación Personal'"
-        secondary={<></>}
+        title="Solicitud de puesto de trabajo"
+        secondary={
+          <Button
+            variant="contained"
+            startIcon={<BookIcon />}
+            onClick={() =>
+              window.open("http://localhost:3001/wallet", "_blank")
+            }
+          >
+            Consultar Credenciales
+          </Button>
+        }
       >
         {renderStep()}{" "}
       </MainCard>

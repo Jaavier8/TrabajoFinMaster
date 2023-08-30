@@ -1,12 +1,7 @@
 import { useState, useEffect } from "react";
 
 // material-ui
-import {
-  Grid,
-  Typography,
-  Stack,
-  CircularProgress,
-} from "@mui/material";
+import { Grid, Typography, Stack, CircularProgress } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 // project imports
@@ -47,27 +42,29 @@ export default function UniversityScred(props) {
         }
 
         setSchemas(schemasInfo);
-
       } else {
         console.log("Error al obtener los esquemas");
         //TODO: error
       }
 
       //CredentialsDef
-      const credIdsRes = await fetch(`${UNIVERSITY_ISSUER}/credential-definitions/created`);
+      const credIdsRes = await fetch(
+        `${UNIVERSITY_ISSUER}/credential-definitions/created`
+      );
       if (credIdsRes.status === 200) {
         const credIdsResJson = await credIdsRes.json();
         const credIds = credIdsResJson["credential_definition_ids"];
 
         let credentialsInfo = [];
         for (const credId of credIds) {
-          const credRes = await fetch(`${UNIVERSITY_ISSUER}/credential-definitions/${credId}`);
+          const credRes = await fetch(
+            `${UNIVERSITY_ISSUER}/credential-definitions/${credId}`
+          );
           const credResJson = await credRes.json();
           credentialsInfo.push(credResJson["credential_definition"]);
         }
 
         setCredentialsDef(credentialsInfo);
-
       } else {
         console.log("Error al obtener las credenciales");
         //TODO: error
@@ -75,18 +72,30 @@ export default function UniversityScred(props) {
 
       await new Promise((r) => setTimeout(r, 2000));
       setLoadingData(false);
-
     }
     getData();
   }, []);
 
   const schemaFromSeqNo = (seqNo) => {
-    for(const schema of schemas){
-      if(schema.seqNo === seqNo){
-        return schema.name
+    for (const schema of schemas) {
+      if (schema.seqNo === parseInt(seqNo)) {
+        return schema.name;
       }
     }
-  }
+  };
+
+  const returnAttrs = (schName) => {
+    switch (schName) {
+      case "passport":
+        return "Nombre, Apellido, Fecha de nacimiento y Número de identificación";
+      case "certificate":
+        return "Idioma, Identificador del idioma y Puntuación";
+      case "degree":
+        return "Nombre del grado, Identificador del grado, Nombre de la escuela, Identificador de la escuela y Nota media final";
+      default:
+        return "Atributos desconocidos";
+    }
+  };
 
   return (
     <>
@@ -112,7 +121,20 @@ export default function UniversityScred(props) {
             {schemas.map((sch, index) => {
               return (
                 <Grid item xs={6} key={index}>
-                  <SubCard title={"Esquema: " + sch.name}>
+                  <SubCard
+                    title={
+                      <>
+                        {"Nombre del esquema:"}
+                        <br />
+                        <Typography
+                          variant="h3"
+                          sx={{ alignSelf: "center", color: "red" }}
+                        >
+                          {sch.name}
+                        </Typography>
+                      </>
+                    }
+                  >
                     <Stack
                       direction="column"
                       justifyContent="center"
@@ -123,7 +145,7 @@ export default function UniversityScred(props) {
                         {"Versión: " + sch.version}
                       </Typography>
                       <Typography variant="subtitle1">
-                        {"Atributos: " + sch.attrNames}
+                        {"Atributos: " + returnAttrs(sch.name)}
                       </Typography>
                     </Stack>
                   </SubCard>
@@ -136,7 +158,9 @@ export default function UniversityScred(props) {
       <MainCard title="Definición Credenciales" secondary={<></>}>
         {credentialsDef.length === 0 ? (
           <Stack>
-            <Typography align="center">No hay ninguna credencial definida</Typography>
+            <Typography align="center">
+              No hay ninguna credencial definida
+            </Typography>
           </Stack>
         ) : loadingData ? (
           <Stack sx={{ mb: 5 }} alignItems="center">
@@ -155,15 +179,31 @@ export default function UniversityScred(props) {
             {credentialsDef.map((credDef, index) => {
               return (
                 <Grid item xs={6} key={index}>
-                  <SubCard title={"Credencial: " + credDef.tag}>
+                  <SubCard
+                    title={
+                      <>
+                        {"Nombre de la definición de credencial:"}
+                        <br />
+                        <Typography
+                          variant="h3"
+                          sx={{ alignSelf: "center", color: "red" }}
+                        >
+                          {credDef.tag}
+                        </Typography>
+                      </>
+                    }
+                  >
                     <Stack
-                      direction="column"
-                      justifyContent="center"
-                      alignItems="flex-start"
+                      direction="row"
+                      justifyContent="flex-start"
+                      alignItems="center"
                       spacing={2}
                     >
                       <Typography variant="subtitle1">
-                        {"Creado a partir del esquema llamado: " + schemaFromSeqNo(credDef.schemaId)}
+                        {"Creado a partir del esquema:"}
+                      </Typography>
+                      <Typography variant="subtitle1" sx={{ color: "#673ab7" }}>
+                        {schemaFromSeqNo(credDef.schemaId)}
                       </Typography>
                     </Stack>
                   </SubCard>

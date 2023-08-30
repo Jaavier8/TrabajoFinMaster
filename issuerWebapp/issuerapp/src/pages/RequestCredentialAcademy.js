@@ -28,12 +28,9 @@ const MyGrid = styled(Grid)(({ theme }) => ({
 const gridSpacing = 3;
 
 const LANGUAGE_MAP = {
-  english: "1",
-  french: "2",
-  spanish: "3",
-  1: "english",
-  2: "french",
-  3: "spanish",
+  Inglés: "1",
+  Francés: "2",
+  Español: "3",
 };
 
 export default function RequestCredentialAcademy(props) {
@@ -141,8 +138,10 @@ export default function RequestCredentialAcademy(props) {
             for (const data of offerReceived) {
               switch (data["name"]) {
                 case "language":
+                  setLanguage(data["value"]);
+                  break;
+                case "languageid":
                   setLanguageId(data["value"]);
-                  setLanguage(LANGUAGE_MAP[data["value"]])
                   break;
                 case "score":
                   setScore(data["value"]);
@@ -185,6 +184,7 @@ export default function RequestCredentialAcademy(props) {
         body: JSON.stringify(
           SEND_PROPOSAL_ACADEMY(
             academyConnectionId,
+            language,
             languageId,
             credId,
             schemaId,
@@ -354,22 +354,16 @@ export default function RequestCredentialAcademy(props) {
                       setLanguageId(LANGUAGE_MAP[event.target.value]);
                     }}
                   >
-                    <MenuItem key={1} value={"english"}>
+                    <MenuItem key={1} value={"Inglés"}>
                       Inglés
                     </MenuItem>
-                    <MenuItem key={2} value={"french"}>
+                    <MenuItem key={2} value={"Francés"}>
                       Francés
                     </MenuItem>
-                    <MenuItem key={3} value={"spanish"}>
+                    <MenuItem key={3} value={"Español"}>
                       Español
                     </MenuItem>
                   </TextField>
-                  <TextField
-                    fullWidth
-                    value={languageId}
-                    disabled
-                    label="ID del Idioma (El que aparece en la credencial)"
-                  />
 
                   <Button
                     fullWidth
@@ -413,41 +407,26 @@ export default function RequestCredentialAcademy(props) {
 
                   <TextField
                     select
+                    disabled
                     fullWidth
                     value={language}
                     label="Idioma"
-                    onChange={(event) => {
-                      setLanguage(event.target.value);
-                      setLanguageId(LANGUAGE_MAP[event.target.value]);
-                    }}
                   >
-                    <MenuItem key={1} value={"english"}>
+                    <MenuItem key={1} value={"Inglés"}>
                       Inglés
                     </MenuItem>
-                    <MenuItem key={2} value={"french"}>
+                    <MenuItem key={2} value={"Francés"}>
                       Francés
                     </MenuItem>
-                    <MenuItem key={3} value={"spanish"}>
+                    <MenuItem key={3} value={"Español"}>
                       Español
                     </MenuItem>
                   </TextField>
                   <TextField
                     fullWidth
                     disabled
-                    value={languageId}
-                    label="ID del Idioma (El que aparece en la credencial)"
-                    onChange={(event) => {
-                      setLanguage(event.target.value);
-                    }}
-                  />
-                  <TextField
-                    fullWidth
-                    disabled
                     value={score}
-                    label="Nota"
-                    onChange={(event) => {
-                      setScore(event.target.value);
-                    }}
+                    label="Puntuación"
                   />
 
                   <Button fullWidth variant="outlined" onClick={acceptOffer}>

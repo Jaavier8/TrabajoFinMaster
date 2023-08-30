@@ -13,6 +13,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { styled } from "@mui/material/styles";
+import "dayjs/locale/en-gb";
 
 // project imports
 import SubCard from "components/SubCard";
@@ -141,7 +142,14 @@ export default function RequestCredentialPolice(props) {
                   setFirstName(data["value"]);
                   break;
                 case "dateofbirth":
-                  setDateOfBirth(data["value"]);
+                  const date = new Date(parseInt(data["value"]) * 1000);
+                  const simpleDate =
+                    date.getDate() +
+                    "/" +
+                    (date.getMonth() + 1) +
+                    "/" +
+                    date.getFullYear();
+                  setDateOfBirth(simpleDate);
                   break;
                 case "idnumber":
                   setIdNumber(data["value"]);
@@ -362,7 +370,10 @@ export default function RequestCredentialPolice(props) {
                       setLastName(event.target.value);
                     }}
                   />
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDayjs}
+                    adapterLocale="en-gb"
+                  >
                     <DatePicker
                       label="Fecha de nacimiento"
                       value={dateOfBirth}
@@ -426,36 +437,24 @@ export default function RequestCredentialPolice(props) {
                     disabled
                     value={firstName}
                     label="Nombre"
-                    onChange={(event) => {
-                      setFirstName(event.target.value);
-                    }}
                   />
                   <TextField
                     fullWidth
                     disabled
                     value={lastName}
                     label="Apellido"
-                    onChange={(event) => {
-                      setLastName(event.target.value);
-                    }}
                   />
                   <TextField
                     fullWidth
                     disabled
-                    value={lastName}
-                    label="Fecha de nacimiento (En segundos desde 1970)"
-                    onChange={(event) => {
-                      setDateOfBirth(event.target.value);
-                    }}
+                    value={dateOfBirth}
+                    label="Fecha de nacimiento"
                   />
                   <TextField
                     fullWidth
                     disabled
                     value={idNumber}
                     label="Nº de identificación"
-                    onChange={(event) => {
-                      setIdNumber(event.target.value);
-                    }}
                   />
 
                   <Button fullWidth variant="outlined" onClick={acceptOffer}>

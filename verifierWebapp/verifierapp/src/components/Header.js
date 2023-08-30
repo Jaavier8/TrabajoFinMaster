@@ -1,9 +1,10 @@
 // material-ui
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+
+import { useLocation } from "react-router-dom";
 
 // project imports
 import LogoSection from "./LogoSection";
-import NavbarNavigation from "./NavbarNavigation";
 
 // assets
 import { Stack } from "@mui/system";
@@ -11,6 +12,8 @@ import { Stack } from "@mui/system";
 // ==============================|| MAIN NAVBAR / HEADER ||============================== //
 
 const Header = () => {
+  const location = useLocation();
+
   return (
     <Stack
       direction="row"
@@ -21,20 +24,22 @@ const Header = () => {
       {/* logo & toggler button */}
       <Box
         component="span"
-        sx={{ display: { xs: "none", md: "block" }, width: "15%" }}
+        sx={{ display: { xs: "none", md: "block" }, width: "50%" }}
       >
         <LogoSection />
       </Box>
 
-      {/* navbar navigation */}
-      <Box sx={{ width: "70%" }}>
-        <NavbarNavigation />
+      <Box sx={{ width: "50%" }}>
+        {location.pathname.includes("verifycredential") ? (
+          <Typography variant="h1" align="right" style={{ color: "#673ab7" }}>
+            Solicitud de puesto de trabajo
+          </Typography>
+        ) : location.pathname.includes("admin") ? (
+          <Typography variant="h1" align="right" style={{ color: "#673ab7" }}>
+            Solicitudes presentadas
+          </Typography>
+        ): null}
       </Box>
-
-      <Box
-        component="span"
-        sx={{ display: { xs: "none", md: "block" }, width: "15%" }}
-      />
     </Stack>
   );
 };
