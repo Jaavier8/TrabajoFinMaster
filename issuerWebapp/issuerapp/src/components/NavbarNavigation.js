@@ -50,7 +50,7 @@ const NavbarNavigation = () => {
         to={location.pathname.split("/")[1] + "/issued"}
         variant="text"
       >
-        Credenciales Expedidas
+        Credenciales Emitidas
       </Button>
     </Stack>
   );

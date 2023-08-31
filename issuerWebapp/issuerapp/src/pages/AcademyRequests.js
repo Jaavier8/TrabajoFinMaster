@@ -342,7 +342,14 @@ export default function AcademyRequests(props) {
               return (
                 <Grid item xs={6} key={index}>
                   <SubCard
-                    title={"Estado: " + getState(req.cred_ex_record.state)}
+                    title={
+                      <>
+                        {"Estado: " + getState(req.cred_ex_record.state)}
+                        <br />
+                        {"ID de la conexión: " +
+                          req.cred_ex_record.connection_id}
+                      </>
+                    }
                   >
                     <Stack
                       direction="column"

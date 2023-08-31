@@ -39,10 +39,10 @@ const PAGES = [
     message: "Pulse el siguiente botón para ser redirigido a la página donde se podrán ver las solicitudes de credenciales recibidas."
   },
   {
-    name: "Credenciales expedidas",
+    name: "Credenciales emitidas",
     img: issued,
     path: "/academy/issued",
-    message: "Pulse el siguiente botón para ser redirigido a la página donde se podrán ver las credenciales que se han expedido."
+    message: "Pulse el siguiente botón para ser redirigido a la página donde se podrán ver las credenciales que se han emitido."
   }
 ];
 
