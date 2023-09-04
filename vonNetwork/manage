@@ -1,0 +1,210 @@
+#!/bin/bash
+export MSYS_NO_PATHCONV=1
+# getDockerHost; for details refer to https://github.com/bcgov/DITP-DevOps/tree/main/code/snippets#getdockerhost
+. /dev/stdin <<<"$(cat <(curl -s --raw https://raw.githubusercontent.com/bcgov/DITP-DevOps/main/code/snippets/getDockerHost))"
+export DOCKERHOST=$(getDockerHost)
+
+SCRIPT_HOME="$( cd "$( dirname "$0" )" && pwd )"
+export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-von}"
+
+export TMP_FOLDER='./tmp'
+export CLI_SCRIPTS_FOLDER='./cli-scripts'
+export DEFAULT_CLI_SCRIPT_DIR="${CLI_SCRIPTS_FOLDER}"
+
+export LEDGER_TIMEOUT="${LEDGER_TIMEOUT:-60}"
+export LEDGER_URL_CONFIG="${LEDGER_URL_CONFIG}"
+
+export ROOT_BACKUP_DIR=backup
+export SHELL_CMD='bash'
+
+# ========================================================================================================
+# Check Docker Compose
+# --------------------------------------------------------------------------------------------------------
+
+# Default to deprecated V1 'docker-compose'.
+dockerCompose="docker-compose --log-level ERROR"
+
+# Prefer 'docker compose' V2 if available
+if [[ $(docker compose version 2> /dev/null) == 'Docker Compose'* ]]; then
+  dockerCompose="docker --log-level error compose"
+fi
+
+
+# -----------------------------------------------------------------------------------------------------------------
+# Initialization:
+# -----------------------------------------------------------------------------------------------------------------
+while getopts v:h FLAG; do
+  case $FLAG in
+    v ) VOLUMES=$OPTARG ;;
+    h ) usage ;;
+    \? ) #unrecognized option - show help
+      echo -e \\n"Invalid script option: -${OPTARG}"\\n
+      usage
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+
+# -----------------------------------------------------------------------------------------------------------------
+# Functions:
+# -----------------------------------------------------------------------------------------------------------------
+function toLower() {
+  echo $(echo ${@} | tr '[:upper:]' '[:lower:]')
+}
+
+function initDockerBuildArgs() {
+  dockerBuildArgs=""
+
+  # HTTP proxy, prefer lower case
+  if [[ "${http_proxy}" ]]; then
+    dockerBuildArgs=" ${dockerBuildArgs} --build-arg http_proxy=${http_proxy}"
+  else
+    if [[ "${HTTP_PROXY}" ]]; then
+      dockerBuildArgs=" ${dockerBuildArgs} --build-arg http_proxy=${HTTP_PROXY}"
+    fi
+  fi
+
+  # HTTPS proxy, prefer lower case
+  if [[ "${https_proxy}" ]]; then
+    dockerBuildArgs=" ${dockerBuildArgs} --build-arg https_proxy=${https_proxy}"
+  else
+    if [[ "${HTTPS_PROXY}" ]]; then
+      dockerBuildArgs=" ${dockerBuildArgs} --build-arg https_proxy=${HTTPS_PROXY}"
+    fi
+  fi
+
+  echo ${dockerBuildArgs}
+}
+
+function initEnv() {
+
+  if [ -f .env ]; then
+    while read line; do
+      if [[ ! "$line" =~ ^\# ]] && [[ "$line" =~ .*= ]]; then
+        export ${line//[$'\r\n']}
+      fi
+    done <.env
+  fi
+
+  for arg in "$@"; do
+    # Remove recognized arguments from the list after processing.
+    shift
+    case "$arg" in
+      *=*)
+        export "${arg}"
+        ;;
+      --logs)
+        TAIL_LOGS=1
+        ;;
+      --wait)
+        WAIT_FOR_LEDGER=1
+        ;;
+      --taa-sample)
+        USE_SAMPLE_TAA=1
+        ;;
+      *)
+        # If not recognized, save it for later processing ...
+        set -- "$@" "$arg"
+        ;;
+    esac
+  done
+
+  IP=""
+  IPS=""
+  if [ ! -z $(echo ${1} | grep '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}') ]; then
+    if [[ $1 == *","* ]]; then
+      IPS="$1"
+    else
+      IP="$1"
+    fi
+  fi
+  export IP="$IP" IPS="$IPS"
+
+  export LEDGER_SEED=${LEDGER_SEED}
+
+  export LOG_LEVEL=${LOG_LEVEL:-info}
+  export RUST_LOG=${RUST_LOG:-warning}
+}
+
+
+
+
+
+
+
+
+# OSX ships with an old version of Bash that does not support the \e escape character.
+function echoYellow (){
+  (
+  _msg=${1}
+  _yellow='\x1B[33m'
+  _nc='\x1B[0m' # No Color
+  echo -e "${_yellow}${_msg}${_nc}" >&2
+  )
+}
+
+
+function deleteVolumes() {
+  (
+    _projectName=${COMPOSE_PROJECT_NAME:-docker}
+
+    echoYellow \\n"Stopping and removing any running containers ..."
+    ${dockerCompose} down -v
+
+    _pattern="^${_projectName}_\|^docker_"
+    _volumes=$(docker volume ls -q | grep ${_pattern})
+    if [ ! -z "${_volumes}" ]; then
+      echoYellow "Removing project volumes ..."
+      echo ${_volumes} | xargs docker volume rm
+    fi
+  )
+}
+
+function checkFolderPermissions() {
+  # Create the tmp folder if it does not exist ...
+  if [ ! -d "${TMP_FOLDER}" ]; then
+    echo "Creating ${TMP_FOLDER} ..."
+    mkdir -p tmp
+  fi
+
+  # Ensure folder permissions are set correctly for use inside the docker container ...
+  setFolderReadWriteAll "${TMP_FOLDER}"
+  setFolderReadWriteAll "${CLI_SCRIPTS_FOLDER}"
+}
+
+function setFolderReadWriteAll() {
+  folder=${1}
+  permissions=$(stat -c '%a' ${folder})
+
+  if [[ "${permissions:0-1}" != 5 ]]; then
+    echo "Setting ${folder} to read/write for all users ..."
+    chmod ${folder} a+rws
+  fi
+}
+# =================================================================================================================
+
+pushd "${SCRIPT_HOME}" >/dev/null
+checkFolderPermissions
+COMMAND=$(toLower ${1})
+shift || COMMAND=usage
+
+case "${COMMAND}" in
+  start|up)
+      initEnv "$@"
+      export LEDGER_SEED=${LEDGER_SEED:-000000000000000000000000Trustee1}
+      ${dockerCompose} \
+        up \
+        -d webserver node1 node2 node3 node4
+    ;;
+  down|rm)
+      initEnv "$@"
+      deleteVolumes
+    ;;
+  build)
+      docker build $(initDockerBuildArgs) -t von-network-base .
+    ;;
+  *)
+      usage;;
+esac
+
+popd >/dev/null
